@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission 01 · Email experiment</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0c0e'/%3E%3Ccircle cx='10' cy='16' r='3' fill='%238c8c8c'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23257de0'/%3E%3Ccircle cx='22' cy='16' r='3' fill='%23f47230'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="index.html">ASDA <span>Final Project</span></a>
+  <div class="links">
+    <a href="index.html">Home</a><a href="email.html" aria-current="page">Email</a><a href="concrete.html">Concrete</a><a href="lab.html">Code Lab</a>
+  </div>
+  <button class="btn sm present-btn" type="button">Present</button>
+</nav>
+
+<section class="hero" id="intro" data-title="Mission 01">
+  <canvas id="heroDots" aria-hidden="true"></canvas>
+  <div class="scrim"></div>
+  <div class="wrap">
+    <p class="label">Mission 01 · Hillstrom email experiment · 64,000 customers · 2 weeks</p>
+    <h1>More buyers,<br>not bigger baskets</h1>
+    <p class="lead">Past customers were randomly sent a men's-merchandise email, a women's-merchandise email, or nothing. We ask what the emails did to revenue, and why.</p>
+    <div class="stats">
+      <div class="stat"><b class="countup" data-to="0.57" data-d="2" data-suf="%">0</b><span><i class="dot" style="background:var(--ctrl)"></i>No email bought</span></div>
+      <div class="stat"><b class="countup" data-to="1.25" data-d="2" data-suf="%">0</b><span><i class="dot" style="background:var(--men)"></i>Men's email bought</span></div>
+      <div class="stat"><b class="countup" data-to="0.88" data-d="2" data-suf="%">0</b><span><i class="dot" style="background:var(--women)"></i>Women's email bought</span></div>
+      <div class="stat"><b class="countup" data-to="114" data-d="0" data-pre="$">0</b><span>Spent per buyer, in every arm</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="data" data-title="The data">
+  <div class="wrap">
+    <header><p class="label">01 · Data understanding</p><h2>A clean experiment with a messy outcome</h2></header>
+    <div class="grid2">
+      <div>
+        <div class="fig"><svg id="ecdf" aria-label="Distribution of spend among buyers"></svg></div>
+        <p class="note">Among the 578 buyers: share spending at most $x, by arm (log scale). Hover for values.</p>
+      </div>
+      <div>
+        <div class="panel">
+          <h3>Research questions</h3>
+          <div class="kv"><span><b>Q1</b> Does each email raise revenue per customer?</span></div>
+          <div class="kv"><span><b>Q2</b> Is the lift from more buyers or bigger baskets?</span></div>
+          <div class="kv"><span><b>Q3</b> Does matching the email to past purchases matter?</span></div>
+        </div>
+        <div class="panel" style="margin-top:14px">
+          <h3>What we checked</h3>
+          <div class="kv"><span>Unit of observation</span><b>one customer</b></div>
+          <div class="kv"><span>Customers who spent $0</span><b id="zeroShare">–</b></div>
+          <div class="kv"><span>Minimum purchase (floor)</span><b>$29.99</b></div>
+          <div class="kv"><span>Largest spend (cap)</span><b>$499</b></div>
+          <div class="kv"><span>Randomization: max |T| of 10 covariate tests</span><b id="balT">–</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter alt" id="welch" data-title="Welch t-test">
+  <div class="wrap">
+    <header><p class="label">02 · Lecture 8 · Welch's t-test and p-hacking</p><h2>Both emails raise revenue</h2></header>
+    <div class="controls"><div class="seg" id="segWelch" role="group" aria-label="Comparison"></div></div>
+    <div class="grid2 even">
+      <div>
+        <div class="fig short"><svg id="tplot" aria-label="Welch t statistic against its null distribution"></svg></div>
+        <div class="formula" id="welchFormula"></div>
+      </div>
+      <div class="panel">
+        <h3>Three tests, one correction</h3>
+        <div class="scroll"><table id="welchTab"></table></div>
+        <p class="note">Bonferroni: reject H<sub>0</sub> when <i class="v">p</i> ≤ α/<i class="v">m</i>, with <i class="v">m</i> = 3 tests.</p>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:28px">
+      <div>
+        <div class="controls"><button class="btn sm solid" id="aaRun" type="button">Run 20 fake tests</button><span class="note" id="aaNote">Splits the no-email group at random into two halves, 20 times. There is no real effect, so every "significant" result is a false positive.</span></div>
+        <div class="fig short"><svg id="aaPlot" aria-label="p-values from A/A tests"></svg></div>
+      </div>
+      <div class="panel">
+        <h3>Why we correct</h3>
+        <div class="kv"><span>Fake tests run so far</span><b id="aaN">0</b></div>
+        <div class="kv"><span>Batches with ≥1 false positive at α = 0.05</span><b id="aaRaw">–</b></div>
+        <div class="kv"><span>…with Bonferroni α/20</span><b id="aaBonf">–</b></div>
+        <p class="note">With 20 tests at α = 0.05, about 1 − 0.95<sup>20</sup> ≈ 64% of batches contain a false discovery. Bonferroni brings that back to about 5%.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="bayes" data-title="Bayesian updating">
+  <div class="wrap">
+    <header><p class="label">03 · Lecture 11 · Beta–Binomial updating</p><h2>Feed the posterior, watch it learn</h2></header>
+    <p>Prior <i class="v">θ</i> ~ Beta(<i class="v">α</i><sub>0</sub>, <i class="v">β</i><sub>0</sub>). After <i class="v">h</i> buyers among <i class="v">n</i> customers: <i class="v">θ</i> | <b>x</b> ~ Beta(<i class="v">α</i><sub>0</sub> + <i class="v">h</i>, <i class="v">β</i><sub>0</sub> + <i class="v">n</i> − <i class="v">h</i>).</p>
+    <div class="controls">
+      <div class="seg" id="segPrior" role="group" aria-label="Prior"></div>
+      <div class="seg" id="segGroup" role="group" aria-label="Customers"></div>
+      <label class="range">Customers seen <input id="frac" type="range" min="0" max="1000" value="1000"><b id="fracLab">100%</b></label>
+      <button class="btn sm solid" id="play" type="button">▶ Play from zero</button>
+    </div>
+    <div class="grid2">
+      <div><div class="fig" style="min-height:min(440px,50vh)"><svg id="post" aria-label="Posterior densities"></svg></div></div>
+      <div>
+        <div class="panel"><h3>Monte Carlo from the posteriors</h3><div id="probs"></div></div>
+        <div class="fig short" style="margin-top:14px;min-height:170px"><svg id="trace" aria-label="Probability trace during play"></svg></div>
+        <p class="note" id="priorNote"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter alt" id="boot" data-title="Bootstrap">
+  <div class="wrap">
+    <header><p class="label">04 · Lecture 9 · Nonparametric bootstrap</p><h2>Split the lift: buyers × basket</h2></header>
+    <p>Revenue per customer is <i class="v">μ</i> = <i class="v">p</i> · <i class="v">m</i>, the share who buy times mean spend per buyer, so <i class="v">μ<sub>T</sub></i>/<i class="v">μ<sub>C</sub></i> = (<i class="v">p<sub>T</sub></i>/<i class="v">p<sub>C</sub></i>) · (<i class="v">m<sub>T</sub></i>/<i class="v">m<sub>C</sub></i>). No formula gives the SE of that, so we resample both arms with replacement and recompute everything.</p>
+    <div class="controls">
+      <div class="seg" id="segEmail" role="group" aria-label="Email"></div>
+      <div class="seg" id="segB" role="group" aria-label="Replicates"></div>
+      <button class="btn sm solid" id="bootRun" type="button">Resample live</button>
+      <span class="note" id="bootStatus"></span>
+    </div>
+    <div class="grid3" id="bootFigs"></div>
+    <div class="stats" id="bootStats"></div>
+  </div>
+</section>
+
+<section class="chapter" id="groups" data-title="Who responds">
+  <div class="wrap">
+    <header><p class="label">05 · Q3 · Beta–Binomial within groups</p><h2>The women's email misses men's buyers</h2></header>
+    <div class="grid2">
+      <div><div class="fig tall"><svg id="forest" aria-label="Conversion lift by past purchases"></svg></div></div>
+      <div class="panel">
+        <h3>Reading it</h3>
+        <p class="small">Groups are defined by what customers bought <b>before</b> randomization, so each comparison stays randomized. Points are posterior means of <i class="v">θ</i><sub>email</sub> − <i class="v">θ</i><sub>control</sub> with 95% credible intervals.</p>
+        <div id="forestKV"></div>
+        <p class="note">Exploratory: six subgroup comparisons, not planned in advance. The six Welch tests agree after a Bonferroni correction.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter alt" id="check" data-title="Checking assumptions">
+  <div class="wrap">
+    <header><p class="label">06 · Validation · Bootstrap vs CLT</p><h2>Does the CLT survive 99% zeros?</h2></header>
+    <div class="grid2">
+      <div><div class="fig"><svg id="clt" aria-label="Bootstrap distribution vs normal approximation"></svg></div></div>
+      <div class="panel">
+        <h3>Two standard errors, one answer</h3>
+        <div id="cltKV"></div>
+        <p class="small">Welch's test relies on X̄<sub>T</sub> − X̄<sub>C</sub> being approximately normal. The bootstrap makes no such assumption. They agree, so with about 21,000 customers per arm the CLT holds even for this zero-heavy outcome.</p>
+        <p class="note">Uses the replicates from chapter 04. Resample there to refresh.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="end" data-title="Conclusion">
+  <div class="wrap">
+    <header><p class="label">07 · Conclusion</p><h2>What the data can and cannot establish</h2></header>
+    <div class="grid2 even">
+      <div class="panel" style="background:#eef5fd;border-color:#d4e5f8">
+        <h3>Established, because assignment was random</h3>
+        <div class="kv"><span>Both emails raise revenue per customer</span><b id="c1">–</b></div>
+        <div class="kv"><span>Share of the men's-email lift from more buyers</span><b id="c2">–</b></div>
+        <div class="kv"><span>Basket size ratio (men's email / control)</span><b id="c3">–</b></div>
+        <div class="kv"><span>P(men's converts better than women's)</span><b id="c4">–</b></div>
+      </div>
+      <div class="panel">
+        <h3>Limits</h3>
+        <div class="kv"><span>Two-week window: no long-run or repeat-purchase effects</span></div>
+        <div class="kv"><span>Spend is floored at $29.99 and capped at $499</span></div>
+        <div class="kv"><span>Only 578 buyers: "no basket effect" means "no large one"</span></div>
+        <div class="kv"><span>Subgroups exploratory; one retailer in 2008</span></div>
+      </div>
+    </div>
+    <div class="cta" style="display:flex;flex-wrap:wrap;gap:14px;margin-top:28px"><a class="btn solid" href="lab.html#email">Run this analysis in Python</a><a class="btn" href="concrete.html">Mission 02 · Concrete</a></div>
+  </div>
+</section>
+
+<footer class="site"><div class="wrap"><span>Data: K. Hillstrom, MineThatData E-Mail Analytics Challenge (2008). Every figure on this page is computed in your browser.</span><a href="https://github.com/sahiljangra12/asda-final-project">Source on GitHub</a></div></footer>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/email.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission 02 · Concrete strength</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0c0e'/%3E%3Ccircle cx='10' cy='16' r='3' fill='%238c8c8c'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23257de0'/%3E%3Ccircle cx='22' cy='16' r='3' fill='%23f47230'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="index.html">ASDA <span>Final Project</span></a>
+  <div class="links"><a href="index.html">Home</a><a href="email.html">Email</a><a href="concrete.html" aria-current="page">Concrete</a><a href="lab.html">Code Lab</a></div>
+  <button class="btn sm present-btn" type="button">Present</button>
+</nav>
+
+<section class="hero" id="intro" data-title="Mission 02">
+  <svg class="bg" id="heroCurves" aria-hidden="true"></svg>
+  <div class="scrim"></div>
+  <div class="wrap">
+    <p class="label">Mission 02 · UCI Concrete Compressive Strength · 1,030 laboratory tests</p>
+    <h1>Abrams' law,<br>107 years later</h1>
+    <p class="lead">In 1918 Duff Abrams said one number sets the strength of concrete: water divided by cement. We test how far that law goes, and what the recipe adds for mixtures the model has never seen.</p>
+    <div class="stats" id="heroStats"></div>
+  </div>
+</section>
+
+<section class="chapter" id="data" data-title="The data">
+  <div class="wrap">
+    <header><p class="label">01 · Data understanding</p><h2>One cylinder, one test</h2></header>
+    <div class="controls">
+      <div class="seg" id="segX" role="group" aria-label="x variable"></div>
+      <div class="seg" id="segLogY" role="group" aria-label="y scale"></div>
+    </div>
+    <div class="grid2">
+      <div><div class="fig"><svg id="scatter" aria-label="Strength against a chosen variable"></svg></div><p class="note">Colour = curing age. Hover a point for its recipe.</p></div>
+      <div class="panel">
+        <h3>What shapes the analysis</h3>
+        <div class="kv"><span>Tests (rows)</span><b id="nObs">–</b></div>
+        <div class="kv"><span>Distinct recipes (mixtures)</span><b id="nMix">–</b></div>
+        <div class="kv"><span>Mixtures tested at several ages</span><b id="nMulti">–</b></div>
+        <div class="kv"><span>Exact repeat rows (replicate cylinders, kept)</span><b id="nDup">–</b></div>
+        <div class="kv"><span>Mass of one m³: mean (SD)</span><b id="mass">–</b></div>
+        <p class="small">Tests of one mixture share a batch, so they are not independent. Every validation below therefore holds out <b>whole mixtures</b>. Ingredients sum to an almost fixed mass, so raw amounts are nearly collinear. Ratios remove that constraint.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter alt" id="law" data-title="The law">
+  <div class="wrap">
+    <header><p class="label">02 · Lecture 12 · Least squares in matrix form</p><h2>Fit the law, live</h2></header>
+    <div class="formula" id="lawFormula">log <i>f<sub>i</sub></i> = β<sub>0</sub> + β<sub>1</sub> <i>r<sub>i</sub></i> + Σ<sub>k≤d</sub> γ<sub>k</sub> <i>a<sub>i</sub></i><sup>k</sup> + ε<sub>i</sub>,  <i>a<sub>i</sub></i> = log(age<sub>i</sub>/28),   β̂ = (XᵀX)⁻¹Xᵀy</div>
+    <div class="controls">
+      <div class="seg" id="segRatio" role="group" aria-label="Ratio"></div>
+      <label class="range">Age polynomial degree d <input id="deg" type="range" min="1" max="6" value="2"><b id="degLab">2</b></label>
+    </div>
+    <div class="grid2">
+      <div><div class="fig"><svg id="curves" aria-label="Fitted Abrams curves"></svg></div></div>
+      <div>
+        <div class="panel"><h3>Coefficients</h3><div class="scroll"><table id="coefTab"></table></div></div>
+        <div class="stats" id="lawStats" style="margin-top:14px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="diag" data-title="Diagnostics">
+  <div class="wrap">
+    <header><p class="label">03 · Lecture 13 · Residuals, leverage, collinearity</p><h2>Check before you trust</h2></header>
+    <div class="controls"><div class="seg" id="segScale" role="group" aria-label="Response scale"></div><span class="note" id="diagNote"></span></div>
+    <div class="grid3">
+      <div><p class="label">Residuals vs fitted</p><div class="fig short"><svg id="rvf"></svg></div></div>
+      <div><p class="label">Normal Q–Q</p><div class="fig short"><svg id="qq"></svg></div></div>
+      <div><p class="label">Leverage vs residual</p><div class="fig short"><svg id="lev"></svg></div></div>
+    </div>
+    <div class="grid2" style="margin-top:20px">
+      <div class="panel"><h3>Collinearity: κ(XᵀX) on standardized columns</h3><div id="kappa"></div></div>
+      <div class="panel"><h3>Reading the diagnostics</h3><div id="diagKV"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter alt" id="select" data-title="Model selection">
+  <div class="wrap">
+    <header><p class="label">04 · Lectures 14–15 · AIC, BIC, grouped K-fold CV</p><h2>How curved is the age effect?</h2></header>
+    <div class="controls"><button class="btn sm solid" id="cvRun" type="button">Run grouped 10-fold CV</button><span class="note" id="cvNote">Folds are whole mixtures. Training mixtures only.</span></div>
+    <div class="grid2">
+      <div class="grid2 even" style="gap:14px">
+        <div><p class="label">AIC and BIC − minimum</p><div class="fig short"><svg id="icPlot"></svg></div></div>
+        <div><p class="label">CV mean squared error ± 1 SE</p><div class="fig short"><svg id="cvPlot"></svg></div></div>
+      </div>
+      <div class="panel"><h3>Three criteria, three answers</h3><div class="scroll"><table id="selTab"></table></div><p class="note" id="selNote"></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="reg" data-title="Ridge and lasso">
+  <div class="wrap">
+    <header><p class="label">05 · Lectures 14, 16 · Ridge and lasso</p><h2>Turn the penalty dial</h2></header>
+    <div class="controls">
+      <div class="seg" id="segMethod" role="group" aria-label="Method"></div>
+      <div class="seg" id="segFeat" role="group" aria-label="Features"></div>
+      <label class="range">log₁₀ <span class="nt">λ</span> <input id="lam" type="range" min="-200" max="300" value="0"><b id="lamLab">0</b></label>
+    </div>
+    <div class="grid2">
+      <div><div class="fig tall"><svg id="coefBars" aria-label="Standardized coefficients"></svg></div></div>
+      <div>
+        <p class="label">Coefficient path · marker = current <span class="nt">λ</span></p><div class="fig short"><svg id="pathPlot"></svg></div>
+        <p class="label" style="margin-top:12px">Grouped CV error vs <span class="nt">λ</span></p><div class="fig short" style="min-height:190px"><svg id="lamCV"></svg></div>
+        <p class="note" id="regNote"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter alt" id="compare" data-title="Held-out test">
+  <div class="wrap">
+    <header><p class="label">06 · Validation on mixtures never seen in fitting</p><h2>What the ingredients add</h2></header>
+    <div class="controls"><button class="btn sm solid" id="reshuffle" type="button">Reshuffle the split</button><span class="note" id="splitNote"></span></div>
+    <div class="grid2">
+      <div><div class="fig"><svg id="cmpPlot" aria-label="Model comparison"></svg></div></div>
+      <div class="panel"><h3>Reading it</h3><div id="cmpKV"></div><p class="note">RMSE of log strength; 0.21 ≈ a typical error of 21%. Reshuffle to see how much the ranking depends on which mixtures were held out.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="binder" data-title="Replace the cement">
+  <div class="wrap">
+    <header><p class="label">07 · The binder-composition model</p><h2>Swap cement, wait, compare</h2></header>
+    <div class="controls">
+      <div class="seg" id="segSCM" role="group" aria-label="Replacement"></div>
+      <label class="range">Share of binder replaced <input id="share" type="range" min="0" max="50" value="30"><b id="shareLab">30%</b></label>
+      <label class="range">Water / binder <input id="wbIn" type="range" min="30" max="70" value="45"><b id="wbLab">0.45</b></label>
+    </div>
+    <div class="grid2">
+      <div><div class="fig"><svg id="gain" aria-label="Strength over time"></svg></div></div>
+      <div class="panel"><h3>Predicted strength change vs all-cement binder</h3><div id="gainKV"></div><p class="note">From log f = β₀ + β₁ w/b + β₂ slag share + β₃ ash share + β₄ superplasticizer + age terms + share × log-age interactions, fitted on all tests. Associations across recipes, not a controlled experiment.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter alt" id="end" data-title="Conclusion">
+  <div class="wrap">
+    <header><p class="label">08 · Conclusion</p><h2>A 1918 law still does most of the work</h2></header>
+    <div class="grid2 even">
+      <div class="panel" style="background:#eef5fd;border-color:#d4e5f8"><h3>Findings</h3><div id="endKV"></div></div>
+      <div class="panel"><h3>Limits</h3>
+        <div class="kv"><span>Data pool several laboratories; curing conditions not recorded</span></div>
+        <div class="kv"><span>Repeated tests of a mixture are correlated: analytic SEs optimistic</span></div>
+        <div class="kv"><span>Recipes were not randomized: slag and fly-ash effects are associations</span></div>
+        <div class="kv"><span>exp(predicted log f) estimates the median, not the mean</span></div>
+      </div>
+    </div>
+    <div class="cta" style="display:flex;flex-wrap:wrap;gap:14px;margin-top:28px"><a class="btn solid" href="lab.html#concrete">Run this analysis in Python</a><a class="btn" href="report/report.pdf">Read the report (PDF)</a></div>
+  </div>
+</section>
+
+<footer class="site"><div class="wrap"><span>Data: I.-C. Yeh (1998), UCI Concrete Compressive Strength, doi:10.24432/C5PK67. Every figure on this page is computed in your browser.</span><a href="https://github.com/sahiljangra12/asda-final-project">Source on GitHub</a></div></footer>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/concrete.js"></script>
+</body>
+</html>

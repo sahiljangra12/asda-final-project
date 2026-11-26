@@ -1,0 +1,394 @@
+{
+  "seed": 20261207,
+  "B": 10000,
+  "M": 400000,
+  "arms": {
+    "No E-Mail": {
+      "n": 21306,
+      "visit_rate": 0.10616727682343002,
+      "conv_rate": 0.005726086548390125,
+      "conversions": 122,
+      "revenue_per_customer": 0.6527893551112361,
+      "basket": 114.00270491803279,
+      "basket_median": 88.36500000000001,
+      "n_at_cap": 2,
+      "n_at_floor": 26
+    },
+    "Mens E-Mail": {
+      "n": 21307,
+      "visit_rate": 0.18275684047496127,
+      "conv_rate": 0.01253109306800582,
+      "conversions": 267,
+      "revenue_per_customer": 1.422616511005773,
+      "basket": 113.52692883895132,
+      "basket_median": 66.98,
+      "n_at_cap": 6,
+      "n_at_floor": 70
+    },
+    "Womens E-Mail": {
+      "n": 21387,
+      "visit_rate": 0.151400383410483,
+      "conv_rate": 0.008837144059475383,
+      "conversions": 189,
+      "revenue_per_customer": 1.0772015710478329,
+      "basket": 121.8947619047619,
+      "basket_median": 94.71,
+      "n_at_cap": 4,
+      "n_at_floor": 40
+    }
+  },
+  "balance_t": {
+    "recency|Mens E-Mail": 0.705,
+    "recency|Womens E-Mail": 0.535,
+    "history|Mens E-Mail": 0.786,
+    "history|Womens E-Mail": 0.673,
+    "newbie|Mens E-Mail": -0.092,
+    "newbie|Womens E-Mail": 0.264,
+    "mens|Mens E-Mail": -0.473,
+    "mens|Womens E-Mail": -0.892,
+    "womens|Mens E-Mail": 0.783,
+    "womens|Womens E-Mail": 0.511
+  },
+  "max_abs_balance_t": 0.892,
+  "welch": [
+    {
+      "comparison": "Mens E-Mail vs No E-Mail",
+      "diff": 0.7698271558945368,
+      "se": 0.14524656024868676,
+      "t": 5.300140358411669,
+      "df": 36671.15797736051,
+      "p": 1.163814968225482e-07,
+      "ci95": [
+        0.4851397325684076,
+        1.0545145792206658
+      ],
+      "p_bonf": 3.491444904676446e-07,
+      "reject_bonf": true
+    },
+    {
+      "comparison": "Womens E-Mail vs No E-Mail",
+      "diff": 0.4244122159365967,
+      "se": 0.13033285852919116,
+      "t": 3.2563715760253924,
+      "df": 40064.88440653066,
+      "p": 0.0011293971023632475,
+      "ci95": [
+        0.16895678988377877,
+        0.6798676419894147
+      ],
+      "p_bonf": 0.0033881913070897426,
+      "reject_bonf": true
+    },
+    {
+      "comparison": "Mens E-Mail vs Womens E-Mail",
+      "diff": 0.34541493995794004,
+      "se": 0.15961741484165423,
+      "t": 2.1640178817618563,
+      "df": 41584.5884832084,
+      "p": 0.030468651185299227,
+      "ci95": [
+        0.03256144962609531,
+        0.6582684302897848
+      ],
+      "p_bonf": 0.09140595355589767,
+      "reject_bonf": false
+    }
+  ],
+  "subgroup_welch": [
+    {
+      "group": "Men's only",
+      "arm": "Mens E-Mail",
+      "diff": 0.682735312299813,
+      "se": 0.22223022988537258,
+      "t": 3.0721982002717234,
+      "p": 0.0021282218010223327,
+      "p_bonf": 0.012769330806133995,
+      "reject_bonf": true
+    },
+    {
+      "group": "Men's only",
+      "arm": "Womens E-Mail",
+      "diff": 0.27835448170778665,
+      "se": 0.20506311079709888,
+      "t": 1.3574088514789304,
+      "p": 0.17466809037325362,
+      "p_bonf": 1.0,
+      "reject_bonf": false
+    },
+    {
+      "group": "Women's only",
+      "arm": "Mens E-Mail",
+      "diff": 0.6157308065834535,
+      "se": 0.1765608796918219,
+      "t": 3.4873569256008494,
+      "p": 0.0004891358520919593,
+      "p_bonf": 0.0029348151125517556,
+      "reject_bonf": true
+    },
+    {
+      "group": "Women's only",
+      "arm": "Womens E-Mail",
+      "diff": 0.6316479517709466,
+      "se": 0.17169419102604813,
+      "t": 3.6789127692451618,
+      "p": 0.0002349794331030802,
+      "p_bonf": 0.0014098765986184812,
+      "reject_bonf": true
+    },
+    {
+      "group": "Both",
+      "arm": "Mens E-Mail",
+      "diff": 1.824986420861755,
+      "se": 0.6810458464991533,
+      "t": 2.679682183281656,
+      "p": 0.007402846568264803,
+      "p_bonf": 0.04441707940958882,
+      "reject_bonf": true
+    },
+    {
+      "group": "Both",
+      "arm": "Womens E-Mail",
+      "diff": 0.16188124260971226,
+      "se": 0.49756959557649416,
+      "t": 0.3253439198232227,
+      "p": 0.7449367530442481,
+      "p_bonf": 1.0,
+      "reject_bonf": false
+    }
+  ],
+  "bootstrap": {
+    "Mens E-Mail": {
+      "diff": {
+        "obs": 0.7698271558945368,
+        "lo": 0.4932657274998231,
+        "hi": 1.0530203675337222,
+        "se_boot": 0.14322453173628927
+      },
+      "revenue_ratio": {
+        "obs": 2.1792887703620063,
+        "lo": 1.6481487297346291,
+        "hi": 2.9354055751616173,
+        "se_boot": 0.32816312809142695
+      },
+      "buyer_ratio": {
+        "obs": 2.188421876286328,
+        "lo": 1.7763098007039066,
+        "hi": 2.7290385788707936,
+        "se_boot": 0.2408924320577423
+      },
+      "basket_ratio": {
+        "obs": 0.9958266246452351,
+        "lo": 0.8196542268212508,
+        "hi": 1.2187702722895382,
+        "se_boot": 0.10207464668053771
+      },
+      "buyer_share": {
+        "obs": 1.0053685697822985,
+        "lo": 0.7968080615633466,
+        "hi": 1.3450709509131864
+      },
+      "welch_se": 0.14524656024868676
+    },
+    "Womens E-Mail": {
+      "diff": {
+        "obs": 0.4244122159365967,
+        "lo": 0.16562445367377018,
+        "hi": 0.68006742369505,
+        "se_boot": 0.13131712388309433
+      },
+      "revenue_ratio": {
+        "obs": 1.6501518638646862,
+        "lo": 1.2171688850679963,
+        "hi": 2.266369678584731,
+        "se_boot": 0.26537337344437073
+      },
+      "buyer_ratio": {
+        "obs": 1.5433130436982172,
+        "lo": 1.2245074246519163,
+        "hi": 1.9471631271484862,
+        "se_boot": 0.18159855761021138
+      },
+      "basket_ratio": {
+        "obs": 1.0692269274874089,
+        "lo": 0.8737606773563507,
+        "hi": 1.3125979514084734,
+        "se_boot": 0.11204598356998884
+      },
+      "buyer_share": {
+        "obs": 0.8663600385171955,
+        "lo": 0.5607389339003803,
+        "hi": 1.5106199585701894
+      },
+      "welch_se": 0.13033285852919116
+    }
+  },
+  "posterior": {
+    "No E-Mail": {
+      "a": 123.0,
+      "b": 21185.0,
+      "n": 21306,
+      "h": 122,
+      "mean": 0.005772479819785996,
+      "lo": 0.004799950626894482,
+      "hi": 0.006832833420787458
+    },
+    "Mens E-Mail": {
+      "a": 268.0,
+      "b": 21041.0,
+      "n": 21307,
+      "h": 267,
+      "mean": 0.012576845464357783,
+      "lo": 0.01112443606520422,
+      "hi": 0.014115893592745486
+    },
+    "Womens E-Mail": {
+      "a": 190.0,
+      "b": 21199.0,
+      "n": 21387,
+      "h": 189,
+      "mean": 0.00888307073729487,
+      "lo": 0.007669688921653539,
+      "hi": 0.010183411724261921
+    }
+  },
+  "posterior_comparisons": {
+    "Mens E-Mail > No E-Mail": {
+      "prob": 1.0,
+      "diff_mean": 0.0068039835411692435,
+      "diff_lo": 0.005014188399788579,
+      "diff_hi": 0.008628597533229032
+    },
+    "Womens E-Mail > No E-Mail": {
+      "prob": 0.9999375,
+      "diff_mean": 0.0031087112827558904,
+      "diff_lo": 0.001498444223893587,
+      "diff_hi": 0.004735342167149523
+    },
+    "Mens E-Mail > Womens E-Mail": {
+      "prob": 0.9999175,
+      "diff_mean": 0.003693702096308937,
+      "diff_lo": 0.0017455058902508113,
+      "diff_hi": 0.00565397102675408
+    }
+  },
+  "prior_sensitivity": {
+    "Uniform Beta(1,1)": {
+      "Mens E-Mail > No E-Mail": 1.0,
+      "Womens E-Mail > No E-Mail": 0.9999,
+      "Mens E-Mail > Womens E-Mail": 0.9999
+    },
+    "Jeffreys Beta(0.5,0.5)": {
+      "Mens E-Mail > No E-Mail": 1.0,
+      "Womens E-Mail > No E-Mail": 0.9999,
+      "Mens E-Mail > Womens E-Mail": 0.9999
+    },
+    "Informative Beta(2,198)": {
+      "Mens E-Mail > No E-Mail": 1.0,
+      "Womens E-Mail > No E-Mail": 0.9999,
+      "Mens E-Mail > Womens E-Mail": 0.9999
+    },
+    "Sceptical Beta(29,4971)": {
+      "Mens E-Mail > No E-Mail": 1.0,
+      "Womens E-Mail > No E-Mail": 0.9998,
+      "Mens E-Mail > Womens E-Mail": 0.9998
+    }
+  },
+  "heterogeneity": [
+    {
+      "group": "Men's only",
+      "arm": "Mens E-Mail",
+      "n_arm": 9558,
+      "conv_arm": 110,
+      "conv_ctrl": 53,
+      "n_ctrl": 9638,
+      "prob_pos": 0.9999975,
+      "lift_mean": 0.006008374979456264,
+      "lift_lo": 0.0034237270670748176,
+      "lift_hi": 0.008650930699119496
+    },
+    {
+      "group": "Men's only",
+      "arm": "Womens E-Mail",
+      "n_arm": 9622,
+      "conv_arm": 59,
+      "conv_ctrl": 53,
+      "n_ctrl": 9638,
+      "prob_pos": 0.71775,
+      "lift_mean": 0.0006336244739305893,
+      "lift_lo": -0.0015322072921350079,
+      "lift_hi": 0.00280688163691995
+    },
+    {
+      "group": "Men's only",
+      "arm": "Mens > Womens",
+      "prob_pos": 0.9999775,
+      "lift_mean": 0.0053762228359394955,
+      "lift_lo": 0.0027447714939070767,
+      "lift_hi": 0.008079359532063804
+    },
+    {
+      "group": "Women's only",
+      "arm": "Mens E-Mail",
+      "n_arm": 9568,
+      "conv_arm": 104,
+      "conv_ctrl": 49,
+      "n_ctrl": 9519,
+      "prob_pos": 0.999995,
+      "lift_mean": 0.005721209275574771,
+      "lift_lo": 0.003213371756065012,
+      "lift_hi": 0.008303145339961663
+    },
+    {
+      "group": "Women's only",
+      "arm": "Womens E-Mail",
+      "n_arm": 9647,
+      "conv_arm": 99,
+      "conv_ctrl": 49,
+      "n_ctrl": 9519,
+      "prob_pos": 0.9999825,
+      "lift_mean": 0.005113036770082839,
+      "lift_lo": 0.002655864933087194,
+      "lift_hi": 0.007639260757349702
+    },
+    {
+      "group": "Women's only",
+      "arm": "Mens > Womens",
+      "prob_pos": 0.6592325,
+      "lift_mean": 0.000609945840883902,
+      "lift_lo": -0.0022917152735465094,
+      "lift_hi": 0.0035260169532753544
+    },
+    {
+      "group": "Both",
+      "arm": "Mens E-Mail",
+      "n_arm": 2181,
+      "conv_arm": 53,
+      "conv_ctrl": 20,
+      "n_ctrl": 2149,
+      "prob_pos": 0.9999125,
+      "lift_mean": 0.014968890425631392,
+      "lift_lo": 0.007421429342963481,
+      "lift_hi": 0.022860694957477425
+    },
+    {
+      "group": "Both",
+      "arm": "Womens E-Mail",
+      "n_arm": 2118,
+      "conv_arm": 31,
+      "conv_ctrl": 20,
+      "n_ctrl": 2149,
+      "prob_pos": 0.943785,
+      "lift_mean": 0.005330016493988245,
+      "lift_lo": -0.0012594238862690555,
+      "lift_hi": 0.01208616128737646
+    },
+    {
+      "group": "Both",
+      "arm": "Mens > Womens",
+      "prob_pos": 0.988805,
+      "lift_mean": 0.009645050424700758,
+      "lift_lo": 0.0013761779213916953,
+      "lift_hi": 0.018051958956422035
+    }
+  ]
+}

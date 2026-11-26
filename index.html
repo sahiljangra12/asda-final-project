@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASDA Final Project · Live</title>
+<meta name="description" content="EN.553.413/613 final project: a randomized email experiment and Abrams' law for concrete, with every statistic computed live in the browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0c0e'/%3E%3Ccircle cx='10' cy='16' r='3' fill='%238c8c8c'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23257de0'/%3E%3Ccircle cx='22' cy='16' r='3' fill='%23f47230'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="index.html">ASDA <span>Final Project</span></a>
+  <div class="links">
+    <a href="index.html" aria-current="page">Home</a>
+    <a href="email.html">Email</a>
+    <a href="concrete.html">Concrete</a>
+    <a href="lab.html">Code Lab</a>
+    <a href="#project">Project</a>
+  </div>
+</nav>
+
+<section class="hero" id="top" data-title="Home">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="scrim"></div>
+  <div class="wrap">
+    <p class="label">EN.553.413/613 · Applied Statistics and Data Science I · Fall 2026</p>
+    <h1>Two datasets.<br>Every number live.</h1>
+    <p class="lead">A randomized email test of 64,000 customers and a century-old law for concrete. Every test, posterior, bootstrap and regression on this site is recomputed in your browser as you change it, and the Code Lab runs our real Python.</p>
+    <div class="cta">
+      <a class="btn solid" href="email.html">Mission 01 · Email</a>
+      <a class="btn" href="concrete.html">Mission 02 · Concrete</a>
+      <a class="btn" href="lab.html">Run the code</a>
+    </div>
+  </div>
+</section>
+
+<section class="mission" id="m1" data-title="Mission 01">
+  <div class="bgfig"><svg id="m1svg" style="width:100%;height:100%" aria-hidden="true"></svg></div>
+  <div class="scrim" style="background:linear-gradient(90deg,rgba(255,255,255,.96) 0%,rgba(255,255,255,.88) 42%,rgba(255,255,255,0) 75%)"></div>
+  <div class="wrap">
+    <p class="label">Mission 01 · Presentation · Hillstrom email experiment</p>
+    <h2>More buyers,<br>not bigger baskets</h2>
+    <p>Customers were randomly sent a men's email, a women's email, or nothing. Both emails raise revenue, and the lift comes almost entirely from more people buying.</p>
+    <div class="concepts"><span class="tag">Welch's t + Bonferroni · L8</span><span class="tag">Bootstrap · L9</span><span class="tag">Beta–Binomial · L11</span></div>
+    <div class="cta" style="display:flex;gap:14px;margin-top:18px"><a class="btn solid" href="email.html">Explore mission</a></div>
+  </div>
+</section>
+
+<section class="mission" id="m2" data-title="Mission 02" style="background:var(--steel)">
+  <div class="bgfig"><svg id="m2svg" style="width:100%;height:100%" aria-hidden="true"></svg></div>
+  <div class="scrim" style="background:linear-gradient(90deg,rgba(242,244,247,.97) 0%,rgba(242,244,247,.88) 42%,rgba(242,244,247,0) 75%)"></div>
+  <div class="wrap">
+    <p class="label">Mission 02 · Written report · Concrete compressive strength</p>
+    <h2>Abrams' law,<br>107 years later</h2>
+    <p>The water-to-binder ratio plus curing age explain 78% of the variation in log-strength across 1,030 lab tests. What do the ingredients add for mixtures we have never seen?</p>
+    <div class="concepts"><span class="tag">Regression + diagnostics · L12–13</span><span class="tag">AIC · BIC · K-fold CV · L14–15</span><span class="tag">Ridge &amp; lasso · L16</span></div>
+    <div class="cta" style="display:flex;gap:14px;margin-top:18px"><a class="btn solid" href="concrete.html">Explore mission</a></div>
+  </div>
+</section>
+
+<section class="chapter" id="lab" data-title="Code Lab">
+  <div class="wrap grid2">
+    <div>
+      <p class="label">Code Lab · Python in the browser</p>
+      <h2>Run our code, live</h2>
+      <p>The Code Lab loads a full Python interpreter (Pyodide) into this page, then our own <code>stats_tools.py</code> and both complete datasets. Edit any cell, rerun it, and run the 31 unit tests on stage.</p>
+      <div class="cta" style="display:flex;gap:14px;margin-top:18px"><a class="btn solid" href="lab.html">Open the Code Lab</a></div>
+    </div>
+    <div class="panel" style="font:13.5px/1.6 var(--mono);white-space:pre;overflow-x:auto" aria-label="Code sample"><span class="muted"># Lecture 11: conjugate update, one line</span>
+def beta_posterior(h, n, alpha0=1.0, beta0=1.0):
+    return alpha0 + h, beta0 + (n - h)
+
+<span class="muted"># men's email: 267 buyers of 21,307</span>
+&gt;&gt;&gt; beta_posterior(267, 21307)
+(268.0, 21041.0)</div>
+  </div>
+</section>
+
+<section class="chapter alt" id="project" data-title="Project">
+  <div class="wrap">
+    <p class="label">The full project</p>
+    <h2>Everything to reproduce it</h2>
+    <div class="grid3" style="margin-top:26px">
+      <div class="panel"><h3>Written report</h3><p class="small muted">Concrete analysis, 4 pages, LaTeX, lecture notation. Every number in it is generated by the code.</p><a class="btn sm" href="report/report.pdf">Open PDF</a></div>
+      <div class="panel"><h3>Slides</h3><p class="small muted">Email-experiment deck (PowerPoint) with speaker notes for four presenters.</p><a class="btn sm" href="slides/Hillstrom_Presentation.pptx">Download PPTX</a></div>
+      <div class="panel"><h3>Source code</h3><p class="small muted">Both analyses, the method library, 31 unit tests and this website, on GitHub.</p><a class="btn sm" href="https://github.com/sahiljangra12/asda-final-project">View on GitHub</a></div>
+    </div>
+    <div class="scroll" style="margin-top:30px">
+      <table>
+        <tr><th>Concept</th><th>Lecture</th><th>Where it is used</th><th>Code</th></tr>
+        <tr><td>Welch's t-test, Bonferroni (p-hacking)</td><td>8</td><td>Email: revenue per customer</td><td><code>welch_t</code>, <code>bonferroni</code></td></tr>
+        <tr><td>Nonparametric bootstrap</td><td>9</td><td>Email: buyer × basket decomposition</td><td><code>bootstrap_two_sample</code></td></tr>
+        <tr><td>Beta–Binomial updating, Monte Carlo</td><td>5, 11</td><td>Email: conversion posteriors</td><td><code>beta_posterior</code>, <code>prob_greater</code></td></tr>
+        <tr><td>Least squares, diagnostics, collinearity</td><td>12–13</td><td>Concrete: the law and its residuals</td><td><code>ols</code>, <code>hat_diag</code>, <code>condition_number</code></td></tr>
+        <tr><td>Polynomial basis, AIC, BIC, K-fold CV</td><td>14–15</td><td>Concrete: age curve, model comparison</td><td><code>gaussian_ic</code>, <code>kfold_indices</code></td></tr>
+        <tr><td>Ridge and lasso</td><td>14, 16</td><td>Concrete: 44-term quadratic model</td><td><code>ridge</code>, <code>lasso</code></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="site"><div class="wrap">
+  <span>Sahil · Teammate 2 · Teammate 3 · Teammate 4 · Johns Hopkins University</span>
+  <span>Data: Hillstrom (2008) MineThatData challenge · Yeh (1998) UCI Concrete Compressive Strength</span>
+</div></footer>
+
+<script src="assets/js/core.js"></script>
+<script src="assets/js/home.js"></script>
+</body>
+</html>
