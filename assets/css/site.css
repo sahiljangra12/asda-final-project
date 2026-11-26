@@ -22,7 +22,7 @@ h3 { font-size: 22px; letter-spacing: .04em }
 p { margin: .5em 0; max-width: 68ch }
 .label { font: 600 14px/1.2 var(--head); letter-spacing: .14em; text-transform: uppercase; color: var(--ink2) }
 .muted { color: var(--ink2) } .small { font-size: 14px } .note { font-size: 14px; color: var(--ink2) }
-.wrap { max-width: 1240px; margin: 0 auto; padding: 0 max(4vw, 18px) }
+.wrap { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 max(4vw, 18px) }
 i.v { font-family: "Times New Roman", serif; font-style: italic; font-size: 1.08em }
 
 /* nav */
@@ -75,7 +75,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* controls */
 .controls { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin: 4px 0 16px }
-.seg { display: inline-flex; flex-wrap: wrap; border: 1.5px solid var(--ink) }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1.5px solid var(--ink); max-width: 100% }
 .seg button { font: 600 13px/1 var(--head); letter-spacing: .12em; text-transform: uppercase; border: 0; border-right: 1.5px solid var(--ink); background: transparent; color: var(--ink); padding: 0 14px; min-height: 40px; cursor: pointer }
 .seg button:last-child { border-right: 0 }
 .seg button[aria-pressed=true] { background: var(--ink); color: #fff }
@@ -149,5 +149,7 @@ footer.site .wrap { display: flex; flex-wrap: wrap; gap: 14px 28px; justify-cont
   .nav { gap: 12px } .brand { font-size: 16px; letter-spacing: .12em } .brand span { display: none } .nav .links { gap: 14px } .present-btn { display: none }
   .fig { min-height: 300px } .chapter { padding-top: 88px }
   table { font-size: 13.5px } th, td { padding: 8px 6px }
+  .seg button { padding: 0 10px; font-size: 12px; letter-spacing: .08em }
+  .range input { width: 44vw }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important } }

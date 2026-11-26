@@ -154,8 +154,9 @@ async function runCell(id, chained) {
     const p = await boot();
     for (const need of c.needs || []) if (!ran.has(need)) await runCell(need, true);
     const out = $("#out-" + id), st = $("#st-" + id); out.innerHTML = ""; st.textContent = "running…"; const t0 = performance.now();
-    const write = s => { out.appendChild(document.createTextNode(s + "\n")); };
-    p.setStdout({ batched: write }); p.setStderr({ batched: write });
+    const write = s => { out.appendChild(document.createTextNode(s + "\n")); }, dec = new TextDecoder();
+    const raw = { write: buf => { out.appendChild(document.createTextNode(dec.decode(buf))); return buf.length; } };
+    p.setStdout(raw); p.setStderr(raw);
     p.runPython("_images.clear()");
     try {
       await p.loadPackagesFromImports(editors[id]());
