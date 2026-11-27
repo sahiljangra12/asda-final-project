@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission 02 · Concrete strength</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0c0e'/%3E%3Ccircle cx='10' cy='16' r='3' fill='%238c8c8c'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23257de0'/%3E%3Ccircle cx='22' cy='16' r='3' fill='%23f47230'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css?v=1795748352">
+</head>
+<body>
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="index.html">ASDA <span>Final Project</span></a>
+  <div class="links"><a href="index.html">Home</a><a href="email.html">Email</a><a href="concrete.html" aria-current="page">Concrete</a><a href="lab.html">Code Lab</a></div>
+  <button class="btn sm present-btn" type="button">Present</button>
+</nav>
+
+<section class="hero" id="intro" data-title="Mission 02">
+  <svg class="bg" id="heroCurves" aria-hidden="true"></svg>
+  <div class="scrim"></div>
+  <div class="wrap">
+    <p class="label">Mission 02 · Written-report dataset · UCI Concrete Compressive Strength · 1,030 laboratory tests</p>
+    <h1>Abrams' law,<br>107 years later</h1>
+    <p class="lead">In 1918 Duff Abrams said one number sets the strength of concrete: water divided by cement. The curves above are that law, fitted to our data, at five curing ages. We test how far it goes, and what the recipe adds for mixtures the model has never seen.</p>
+    <div class="stats" id="heroStats"></div>
+  </div>
+</section>
+
+<!-- ============ 01 RESEARCH QUESTION ============ -->
+<section class="chapter" id="rq" data-title="Research question">
+  <div class="wrap">
+    <header><p class="label">01 · Research question <span class="rub">Rubric: research questions</span></p><h2>Is a 1918 law still enough?</h2></header>
+    <p>Engineers design concrete with a rule of thumb: less water per kilogram of binder means stronger concrete. Modern mixes also replace some cement with industrial by-products (slag, fly ash) to cut cost and CO₂. Instead of just "predicting strength", we test a <b>physical law</b> and measure what it misses.</p>
+    <div class="rq"><span class="n">Q1</span><div><h3>How much of the variation in strength does the law explain, and how precise is its slope?</h3><p>Abrams: f = A / B<sup>w/c</sup>, so log f is <b>linear</b> in the ratio. We use the water-to-binder ratio w/b plus curing age.</p></div></div>
+    <div class="rq"><span class="n">Q2</span><div><h3>Do the individual ingredients add predictive information beyond the law, for mixtures never seen in fitting?</h3><p>Judged on held-out mixtures, not on the data used to fit.</p></div></div>
+    <div class="rq"><span class="n">Q3</span><div><h3>Left to choose freely, does a lasso pick the water–binder ratio?</h3><p>A data-driven check of the physics: the lasso sees both ratios and all seven raw amounts.</p></div></div>
+    <div class="can">
+      <div class="panel"><h3><span class="ok-i">✓</span>What these variables can establish</h3>
+        <div class="kv"><span><b>Associations</b> between recipe, age and strength across 427 lab recipes, and how well they <b>predict</b> new recipes.</span></div>
+        <div class="kv"><span>Whether a <b>simple physical law</b> captures most of that association.</span></div></div>
+      <div class="panel"><h3><span class="no-i">✕</span>What they cannot establish</h3>
+        <div class="kv"><span><b>Causal effects</b> of changing one ingredient: recipes were designed, not randomized, and ingredients move together.</span></div>
+        <div class="kv"><span><b>Lab-to-lab differences</b>: the data pool several sources, and curing conditions are not recorded.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 DATA ============ -->
+<section class="chapter alt" id="data" data-title="The data">
+  <div class="wrap">
+    <header><p class="label">02 · Data understanding <span class="rub">Rubric: data understanding</span></p><h2>One row is one cylinder test</h2></header>
+    <div class="controls">
+      <div class="seg" id="segX" role="group" aria-label="x variable"></div>
+      <div class="seg" id="segLogY" role="group" aria-label="y scale"></div>
+    </div>
+    <div class="grid2">
+      <div><div class="fig"><svg id="scatter" aria-label="Strength against a chosen variable"></svg></div><p class="note"><b>How to read:</b> each dot is one test; colour = curing age. Pick any variable above to see its relation with strength. Hover a dot for its full recipe.</p></div>
+      <div>
+        <div class="panel">
+          <h3>Variables</h3>
+          <div class="scroll"><table class="dict">
+            <tr><th>Column</th><th>Meaning</th></tr>
+            <tr><td>cement, slag, fly ash</td><td>Binders, kg per m³ of concrete</td></tr>
+            <tr><td>water</td><td>kg/m³; divided by the binder total it gives <b>w/b</b></td></tr>
+            <tr><td>superplasticizer</td><td>Additive that lets mixes use less water, kg/m³</td></tr>
+            <tr><td>coarse, fine agg.</td><td>Gravel and sand, kg/m³</td></tr>
+            <tr><td>age</td><td>Days of curing before the test (1–365)</td></tr>
+            <tr><td>strength f</td><td>Compressive strength, MPa: the <b>response</b></td></tr>
+          </table></div>
+          <p class="note">Source: I.-C. Yeh (1998), UCI repository, doi:10.24432/C5PK67. Derived: w/b, w/c, slag and fly-ash shares of the binder, a = log(age/28).</p>
+        </div>
+        <div class="panel" style="margin-top:12px">
+          <h3>Unusual data and what we decided</h3>
+          <div class="kv"><span>Missing values</span><b>none</b></div>
+          <div class="kv"><span>Distinct recipes among <span id="nObs">–</span> tests → hold out <b>whole recipes</b> when validating</span><b id="nMix">–</b></div>
+          <div class="kv"><span>Recipes tested at several ages (not independent)</span><b id="nMulti">–</b></div>
+          <div class="kv"><span>Exact repeats → kept as replicate cylinders</span><b id="nDup">–</b></div>
+          <div class="kv"><span>Mass of 1 m³ is nearly fixed → raw amounts collinear</span><b id="mass">–</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 APPROACH ============ -->
+<section class="chapter" id="approach" data-title="Approach">
+  <div class="wrap">
+    <header><p class="label">03 · Concepts and approach <span class="rub">Rubric: concepts and approach</span></p><h2>Fit, check, choose, shrink</h2></header>
+    <div class="grid3">
+      <div class="concept-card"><span class="lec">Lectures 12–13</span><h3>Least squares + diagnostics</h3>
+        <dl><dt>Answers</dt><dd>Q1: the law's slope, its SE and R².</dd><dt>Why this method</dt><dd>On the log scale the law is linear, so OLS estimates Abrams' constant directly: B = e<sup>−β₁</sup>.</dd><dt>Assumes</dt><dd>Linear mean, constant variance, independent errors. Checked with residual plots, leverage, Cook's distance and κ(XᵀX).</dd></dl></div>
+      <div class="concept-card"><span class="lec">Lectures 14–15</span><h3>AIC, BIC, grouped K-fold CV</h3>
+        <dl><dt>Answers</dt><dd>Q1–Q2: how curved the age effect is, and which model predicts best.</dd><dt>Why this method</dt><dd>R² always rises with more terms. AIC and BIC penalize complexity, and CV measures error on data not used to fit.</dd><dt>Our twist</dt><dd>Folds are whole recipes, so a recipe never appears in both training and validation.</dd></dl></div>
+      <div class="concept-card"><span class="lec">Lectures 14, 16</span><h3>Ridge and lasso</h3>
+        <dl><dt>Answers</dt><dd>Q2–Q3: does shrinkage help a 44-term model, and which variables does the lasso keep?</dd><dt>Why this method</dt><dd>Raw ingredients are nearly collinear. Penalties stabilize the coefficients, and the lasso sets some exactly to 0.</dd><dt>Bayesian view</dt><dd>Ridge = MAP with N(0, τ²) priors (λ = σ²/τ²); lasso = MAP with Laplace(0, b) priors (λ = 2σ²/b).</dd></dl></div>
+    </div>
+    <div class="grid2" style="margin-top:22px">
+      <div class="panel"><h3>Notation (as in the lecture notes)</h3>
+        <div class="scroll"><table class="notation">
+          <tr><td>Y<sub>i</sub> = log f<sub>i</sub></td><td>response: log strength of test i, i = 1, …, n</td></tr>
+          <tr><td>r<sub>i</sub>, a<sub>i</sub></td><td>water/binder ratio; a<sub>i</sub> = log(age<sub>i</sub>/28)</td></tr>
+          <tr><td>y = Xβ + ε</td><td>model in matrix form; X is n × (p+1) with a column of 1s</td></tr>
+          <tr><td>β̂ = (XᵀX)⁻¹Xᵀy</td><td>least squares; Var(β̂ | X) = σ²(XᵀX)⁻¹, σ̂² = RSS/(n−p−1)</td></tr>
+          <tr><td>h<sub>ii</sub>, D<sub>i</sub></td><td>leverage (diagonal of H = X(XᵀX)⁻¹Xᵀ); Cook's distance</td></tr>
+          <tr><td>AIC, BIC</td><td>−2 log L̂ + 2k and −2 log L̂ + k log n</td></tr>
+          <tr><td>λ</td><td>penalty weight for ridge (‖β‖₂²) and lasso (‖β‖₁)</td></tr>
+        </table></div></div>
+      <div class="panel"><h3>Hypothesis we test</h3><p class="small">H<sub>0</sub>: β<sub>1</sub> = 0 (water/binder has no association with log strength) vs H<sub>1</sub>: β<sub>1</sub> ≠ 0, using t = β̂<sub>1</sub> / SE(β̂<sub>1</sub>).</p>
+        <h3 style="margin-top:14px">Different from Mission 01</h3><p class="small">Mission 01 is inference on a randomized experiment: tests, a Bayesian posterior, the bootstrap. Here the methods are <b>regression, model selection and regularization</b>. Only basic summaries and plots are shared.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 LAW ============ -->
+<section class="chapter alt" id="law" data-title="The law">
+  <div class="wrap">
+    <header><p class="label">04 · Concept 1 · Lecture 12 · Least squares in matrix form</p><h2>Fit the law, live</h2></header>
+    <div class="explain">
+      <div class="ex"><b>What we do</b><p>Fit log strength = a line in the water/binder ratio + a polynomial in log-age, by least squares.</p></div>
+      <div class="ex"><b>In symbols</b><p>Y<sub>i</sub> = β<sub>0</sub> + β<sub>1</sub>r<sub>i</sub> + Σ<sub>k≤d</sub> γ<sub>k</sub>a<sub>i</sub><sup>k</sup> + ε<sub>i</sub>, solved by β̂ = (XᵀX)⁻¹Xᵀy.</p></div>
+      <div class="ex"><b>How to read the chart</b><p>Dots are tests at 3–365 days. Each curve is the fitted law at one age: weaker as w/b rises, stronger as concrete ages.</p></div>
+      <div class="ex"><b>Try this</b><p>Switch to w/c, Abrams' original ratio: R² drops. Raise d: the curves barely change. Chapter 06 decides d properly.</p></div>
+    </div>
+    <div class="controls">
+      <div class="seg" id="segRatio" role="group" aria-label="Ratio"></div>
+      <label class="range">Age polynomial degree d <input id="deg" type="range" min="1" max="6" value="2"><b id="degLab">2</b></label>
+    </div>
+    <div class="grid2">
+      <div><div class="fig"><svg id="curves" aria-label="Fitted Abrams curves"></svg></div></div>
+      <div>
+        <div class="panel"><h3>Coefficients (all 1,030 tests)</h3><div class="scroll"><table id="coefTab"></table></div></div>
+        <div class="stats" id="lawStats" style="margin-top:14px"></div>
+      </div>
+    </div>
+    <p class="takeaway"><b>Takeaway</b>Each +0.1 in water/binder lowers strength by about 24% (t ≈ −40). With age, two numbers explain about 78% of the variation in log strength. Abrams' w/c explains only about 66%.</p>
+  </div>
+</section>
+
+<!-- ============ 05 DIAGNOSTICS ============ -->
+<section class="chapter" id="diag" data-title="Diagnostics">
+  <div class="wrap">
+    <header><p class="label">05 · Concept 1 · Lecture 13 · Residuals, leverage, collinearity</p><h2>Check before you trust</h2></header>
+    <div class="explain">
+      <div class="ex"><b>Residuals vs fitted</b><p>Should be a shapeless cloud around 0. A curve means the wrong form; a funnel means non-constant variance.</p></div>
+      <div class="ex"><b>Normal Q–Q</b><p>Points on the line mean roughly normal errors. Bending tails mean heavier tails.</p></div>
+      <div class="ex"><b>Leverage and Cook's D</b><p>h<sub>ii</sub> measures how unusual a recipe is; Cook's D, how much one test moves the fit. Orange: D<sub>i</sub> &gt; 4/n.</p></div>
+      <div class="ex"><b>Try this</b><p>Switch to "Raw MPa": the residuals curve and some predictions go negative. That is why we model log strength.</p></div>
+    </div>
+    <div class="controls"><div class="seg" id="segScale" role="group" aria-label="Response scale"></div><span class="note" id="diagNote"></span></div>
+    <div class="grid3">
+      <div><p class="label">Residuals vs fitted</p><div class="fig short"><svg id="rvf"></svg></div></div>
+      <div><p class="label">Normal Q–Q</p><div class="fig short"><svg id="qq"></svg></div></div>
+      <div><p class="label">Leverage vs residual</p><div class="fig short"><svg id="lev"></svg></div></div>
+    </div>
+    <div class="grid2" style="margin-top:20px">
+      <div class="panel"><h3>Collinearity: κ(XᵀX) on standardized columns</h3><div id="kappa"></div></div>
+      <div class="panel"><h3>Reading the diagnostics</h3><div id="diagKV"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 SELECTION ============ -->
+<section class="chapter alt" id="select" data-title="Model selection">
+  <div class="wrap">
+    <header><p class="label">06 · Concept 2 · Lectures 14–15 · AIC, BIC, grouped K-fold CV</p><h2>How curved is the age effect?</h2></header>
+    <div class="explain">
+      <div class="ex"><b>The question</b><p>Which degree d of the log-age polynomial should the law use?</p></div>
+      <div class="ex"><b>Three referees</b><p>AIC = −2 log L̂ + 2k; BIC = −2 log L̂ + k log n (a harsher penalty); 10-fold CV = average squared error on held-out folds.</p></div>
+      <div class="ex"><b>How to read the charts</b><p>Lower is better. For CV, the bars are ± 1 SE: models within one SE of the best are statistically tied.</p></div>
+      <div class="ex"><b>Why grouped folds</b><p>One recipe tested at 3, 28 and 90 days must not sit in both training and validation, or the error looks falsely small.</p></div>
+    </div>
+    <div class="controls"><button class="btn sm solid" id="cvRun" type="button">Run grouped 10-fold CV</button><span class="note" id="cvNote">Folds are whole recipes. Training recipes only.</span></div>
+    <div class="grid2">
+      <div class="grid2 even" style="gap:14px">
+        <div><p class="label">AIC and BIC − minimum</p><div class="fig short"><svg id="icPlot"></svg></div></div>
+        <div><p class="label">CV mean squared error ± 1 SE</p><div class="fig short"><svg id="cvPlot"></svg></div></div>
+      </div>
+      <div class="panel"><h3>Three criteria, three answers</h3><div class="scroll"><table id="selTab"></table></div><p class="note" id="selNote"></p></div>
+    </div>
+    <p class="takeaway"><b>Takeaway</b>The criteria disagree (AIC: 6, BIC: 2, CV one-SE rule: 1) because the differences are tiny. We use BIC's d = 2: extra age terms do not improve prediction.</p>
+  </div>
+</section>
+
+<!-- ============ 07 RIDGE/LASSO ============ -->
+<section class="chapter" id="reg" data-title="Ridge and lasso">
+  <div class="wrap">
+    <header><p class="label">07 · Concept 3 · Lectures 14, 16 · Ridge and lasso</p><h2>Turn the penalty dial</h2></header>
+    <div class="explain">
+      <div class="ex"><b>What we do</b><p>Minimize ‖y − β<sub>0</sub>1 − Xβ‖² + λ·penalty. Ridge uses ‖β‖₂² (shrinks everything); lasso uses ‖β‖₁ (sets some coefficients to exactly 0).</p></div>
+      <div class="ex"><b>How to read the bars</b><p>Standardized coefficients at the current λ. Grey bars are raw ingredients; coloured bars are w/b, w/c and age.</p></div>
+      <div class="ex"><b>How to read the path</b><p>Each line follows one coefficient as λ changes; the black marker is your λ. The bottom chart is grouped CV error: λ is chosen where it is lowest.</p></div>
+      <div class="ex"><b>Try this</b><p>Lasso, drag λ to the right: variables drop out until w/b and age are almost all that is left.</p></div>
+    </div>
+    <div class="controls">
+      <div class="seg" id="segMethod" role="group" aria-label="Method"></div>
+      <div class="seg" id="segFeat" role="group" aria-label="Features"></div>
+      <label class="range">log₁₀ <span class="nt">λ</span> <input id="lam" type="range" min="-200" max="300" value="0"><b id="lamLab">0</b></label>
+    </div>
+    <div class="grid2">
+      <div><div class="fig tall"><svg id="coefBars" aria-label="Standardized coefficients"></svg></div></div>
+      <div>
+        <p class="label">Coefficient path · marker = current <span class="nt">λ</span></p><div class="fig short"><svg id="pathPlot"></svg></div>
+        <p class="label" style="margin-top:12px">Grouped CV error vs <span class="nt">λ</span></p><div class="fig short" style="min-height:190px"><svg id="lamCV"></svg></div>
+        <p class="note" id="regNote"></p>
+      </div>
+    </div>
+    <p class="takeaway"><b>Takeaway</b>The lasso picks w/b first (with age), ahead of Abrams' w/c and every raw ingredient. For prediction, CV prefers λ ≈ 0: with 800+ tests and 44 terms there is little variance to trade for bias. That is an honest null result.</p>
+  </div>
+</section>
+
+<!-- ============ 08 HELD-OUT ============ -->
+<section class="chapter alt" id="compare" data-title="Held-out test">
+  <div class="wrap">
+    <header><p class="label">08 · Answering Q2 · validation on recipes never seen in fitting <span class="rub">Rubric: results</span></p><h2>What the ingredients add</h2></header>
+    <div class="explain three">
+      <div class="ex"><b>What we do</b><p>Hold out 20% of recipes. Fit every model on the rest; compare error by grouped CV (blue) and on the held-out recipes (orange).</p></div>
+      <div class="ex"><b>How to read</b><p>Root mean squared error of log strength: 0.21 means typical errors of about 21%. Shorter bars are better. Blue ≈ orange means CV estimated the test error well.</p></div>
+      <div class="ex"><b>Try this</b><p>Press "Reshuffle the split" a few times. The numbers move, but the ranking holds: that is robustness.</p></div>
+    </div>
+    <div class="controls"><button class="btn sm solid" id="reshuffle" type="button">Reshuffle the split</button><span class="note" id="splitNote"></span></div>
+    <div class="grid2">
+      <div><div class="fig"><svg id="cmpPlot" aria-label="Model comparison"></svg></div></div>
+      <div class="panel"><h3>Reading it</h3><div id="cmpKV"></div></div>
+    </div>
+    <p class="takeaway"><b>Takeaway</b>Describing <i>what</i> replaces the cement (slag share, fly-ash share) beats listing seven raw amounts, with the same 10 coefficients. A 44-term model gains a little more.</p>
+  </div>
+</section>
+
+<!-- ============ 09 BINDER ============ -->
+<section class="chapter" id="binder" data-title="Replace the cement">
+  <div class="wrap">
+    <header><p class="label">09 · Interpreting the binder-composition model</p><h2>Swap cement, wait, compare</h2></header>
+    <div class="explain three">
+      <div class="ex"><b>What it shows</b><p>Predicted strength over a year for an all-cement binder (black) and for one where part of the cement is slag or fly ash (colour), at the same w/b.</p></div>
+      <div class="ex"><b>The physics</b><p>Slag and fly ash react slowly (pozzolanic reaction). Positive "share × log-age" coefficients mean they catch up later.</p></div>
+      <div class="ex"><b>Caution</b><p>Recipes were not randomized: these are associations across lab mixes, not controlled experiments.</p></div>
+    </div>
+    <div class="controls">
+      <div class="seg" id="segSCM" role="group" aria-label="Replacement"></div>
+      <label class="range">Share of binder replaced <input id="share" type="range" min="0" max="50" value="30"><b id="shareLab">30%</b></label>
+      <label class="range">Water / binder <input id="wbIn" type="range" min="30" max="70" value="45"><b id="wbLab">0.45</b></label>
+    </div>
+    <div class="grid2">
+      <div><div class="fig"><svg id="gain" aria-label="Strength over time"></svg></div></div>
+      <div class="panel"><h3>Predicted change vs all-cement binder</h3><div id="gainKV"></div></div>
+    </div>
+    <p class="takeaway"><b>Takeaway</b>30% slag costs about 11% of strength at 28 days but gives about +14% at one year. Fly ash costs about 19% and only partly recovers (−7% at one year).</p>
+  </div>
+</section>
+
+<!-- ============ 10 RESULTS ============ -->
+<section class="chapter alt" id="results" data-title="Results">
+  <div class="wrap">
+    <header><p class="label">10 · Results <span class="rub">Rubric: results</span></p><h2>The answers, with their uncertainty</h2></header>
+    <p class="small muted">Final numbers from <code>src/concrete_analysis.py</code> (seed 553413; 85 held-out recipes; grouped 10-fold CV), the same numbers as the written report. The live charts above use their own split, so they differ slightly.</p>
+    <div class="scroll"><table id="resTab"></table></div>
+  </div>
+</section>
+
+<!-- ============ 11 INTERPRETATION ============ -->
+<section class="chapter" id="end" data-title="Interpretation">
+  <div class="wrap">
+    <header><p class="label">11 · Interpretation and limitations <span class="rub">Rubric: interpretation and limitations</span></p><h2>A 1918 law still does most of the work</h2></header>
+    <div class="grid2 even">
+      <div class="panel" style="background:#eef5fd;border-color:#d4e5f8"><h3>Why the results are credible</h3>
+        <div class="kv"><span><b>Validated out of sample</b> on whole recipes never used in fitting, with CV and test errors agreeing.</span></div>
+        <div class="kv"><span><b>Assumptions checked</b>: the log scale removes curvature and negative predictions; no single test dominates (Cook's D).</span></div>
+        <div class="kv"><span><b>Honest SEs</b>: the 28-day subset (one test per recipe, so independent) gives the same slope, −2.68 (SE 0.13).</span></div>
+        <div class="kv"><span><b>Three methods agree</b>: OLS, information criteria and the lasso all point to w/b + age as the core.</span></div></div>
+      <div class="panel"><h3>Limits</h3>
+        <div class="kv"><span><b>Pooled labs</b>: curing and testing conditions are unrecorded; some of the error may be lab differences.</span></div>
+        <div class="kv"><span><b>Correlated tests</b>: repeated ages of one recipe make full-data SEs optimistic.</span></div>
+        <div class="kv"><span><b>Not causal</b>: slag and fly-ash effects are associations conditional on w/b and age.</span></div>
+        <div class="kv"><span><b>Variance not constant</b>: young concrete is relatively more variable, so we rely on out-of-sample error.</span></div>
+        <div class="kv"><span><b>Back-transform</b>: exp(predicted log f) estimates the median strength, not the mean.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 CODE + BOARD ============ -->
+<section class="chapter alt" id="code" data-title="Code and board">
+  <div class="wrap">
+    <header><p class="label">12 · Code, tests and the board <span class="rub">Rubric: code · Q&amp;A</span></p><h2>Find it, test it, derive it</h2></header>
+    <div class="grid2">
+      <div class="panel"><h3>Where each method lives</h3><div class="scroll"><table class="dict">
+        <tr><th>Function (stats_tools.py)</th><th>What it does</th><th>Unit test</th></tr>
+        <tr><td>ols</td><td>β̂ = (XᵀX)⁻¹Xᵀy, SEs, R²</td><td>matches numpy lstsq; Xᵀe = 0</td></tr>
+        <tr><td>hat_diag, cooks_distance</td><td>leverage h<sub>ii</sub>, influence D<sub>i</sub></td><td>trace(H) = p + 1</td></tr>
+        <tr><td>condition_number</td><td>κ(XᵀX) = λ<sub>max</sub>/λ<sub>min</sub></td><td>flags near-duplicate columns</td></tr>
+        <tr><td>gaussian_ic</td><td>AIC, BIC</td><td>equals −2 × scipy log-likelihood</td></tr>
+        <tr><td>kfold_indices</td><td>(grouped) K-fold folds</td><td>partition; groups kept together</td></tr>
+        <tr><td>ridge</td><td>closed form, intercept unpenalized</td><td>matches scikit-learn; → OLS as λ→0</td></tr>
+        <tr><td>lasso</td><td>coordinate descent, soft-thresholding</td><td>matches scikit-learn; all 0 above λ<sub>max</sub></td></tr>
+      </table></div></div>
+      <div class="panel"><h3>Reproduce and demonstrate</h3>
+        <div class="kv"><span>Run the analysis and regenerate every report number</span><b><code>python src/concrete_analysis.py</code></b></div>
+        <div class="kv"><span>Run all 31 tests</span><b><code>python -m pytest</code></b></div>
+        <div class="kv"><span>Build the report (numbers come from macros.tex)</span><b><code>latexmk -pdf report.tex</code></b></div>
+        <div class="cta" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px"><a class="btn sm solid" href="lab.html#concrete">Open the Code Lab</a><a class="btn sm" href="report/report.pdf">Written report (PDF)</a></div></div>
+    </div>
+    <div class="board" style="margin-top:20px">
+      <div class="panel"><h3>At the board · Normal equations</h3>
+        <div class="step">RSS(β) = (y − Xβ)ᵀ(y − Xβ)</div><div class="step">∂RSS/∂β = −2Xᵀ(y − Xβ) = 0</div><div class="step">⇒ XᵀXβ̂ = Xᵀy ⇒ β̂ = (XᵀX)⁻¹Xᵀy</div>
+        <p class="note">Abrams: log f = log A − (w/c) log B, so B̂ = e<sup>−β̂₁</sup>.</p></div>
+      <div class="panel"><h3>At the board · AIC for regression</h3>
+        <div class="step">σ̂²<sub>MLE</sub> = RSS/n</div><div class="step">−2 log L̂ = n log(RSS/n) + n log 2π + n</div><div class="step">AIC = −2 log L̂ + 2k,  BIC: k log n</div>
+        <p class="note">k counts every coefficient plus σ².</p></div>
+      <div class="panel"><h3>At the board · Lasso update</h3>
+        <div class="step">ρ<sub>j</sub> = z<sub>j</sub>ᵀ(y − Σ<sub>k≠j</sub> z<sub>k</sub>β<sub>k</sub>)</div><div class="step">β<sub>j</sub> ← S(ρ<sub>j</sub>, λ/2) / z<sub>j</sub>ᵀz<sub>j</sub></div><div class="step">S(ρ, t) = sign(ρ) · max(|ρ| − t, 0)</div>
+        <p class="note">Ridge: β̂ = (ZᵀZ + λI)⁻¹Zᵀy.</p></div>
+    </div>
+    <div class="cta" style="display:flex;flex-wrap:wrap;gap:14px;margin-top:26px"><a class="btn solid" href="email.html">Mission 01 · Email</a><a class="btn" href="index.html#rubric">Rubric map</a></div>
+  </div>
+</section>
+
+<footer class="site"><div class="wrap"><span>Data: I.-C. Yeh (1998), UCI Concrete Compressive Strength, doi:10.24432/C5PK67. Every chart on this page is computed in your browser.</span><a href="https://github.com/sahiljangra12/asda-final-project">Source on GitHub</a></div></footer>
+<script src="assets/js/core.js?v=1795748352"></script>
+<script src="assets/js/concrete.js?v=1795748352"></script>
+<script defer src="https://sahiljangra12.github.io/ask/ask.js" data-site="ASDA Final Project" data-claude="on"></script>
+</body>
+</html>
