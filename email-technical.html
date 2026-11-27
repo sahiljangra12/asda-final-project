@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission 01 · Technical version</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0c0e'/%3E%3Ccircle cx='10' cy='16' r='3' fill='%238c8c8c'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23257de0'/%3E%3Ccircle cx='22' cy='16' r='3' fill='%23f47230'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css?v=1795748352">
+</head>
+<body>
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="index.html">ASDA <span>Final Project</span></a>
+  <div class="links">
+    <a href="index.html">Home</a><a href="email.html" aria-current="page">Email</a><a href="concrete.html">Concrete</a><a href="lab.html">Code Lab</a>
+  </div>
+  <button class="btn sm present-btn" type="button">Present</button>
+</nav>
+
+<section class="hero" id="intro" data-title="Mission 01">
+  <canvas id="heroDots" aria-hidden="true"></canvas>
+  <div class="scrim"></div>
+  <div class="wrap">
+    <p class="label">Mission 01 · Presentation dataset · Hillstrom email experiment · 64,000 customers · 2 weeks</p>
+    <h1>More buyers,<br>not bigger baskets</h1>
+    <p class="lead">Each dot above is one customer, and the coloured dots are the ones who bought something. Customers were <b>randomly</b> sent a men's-merchandise email, a women's-merchandise email, or nothing. We ask what the emails did to revenue, and why.</p>
+    <div class="stats">
+      <div class="stat"><b class="countup" data-to="0.57" data-d="2" data-suf="%">0</b><span><i class="dot" style="background:var(--ctrl)"></i>No email: share who bought</span></div>
+      <div class="stat"><b class="countup" data-to="1.25" data-d="2" data-suf="%">0</b><span><i class="dot" style="background:var(--men)"></i>Men's email: share who bought</span></div>
+      <div class="stat"><b class="countup" data-to="0.88" data-d="2" data-suf="%">0</b><span><i class="dot" style="background:var(--women)"></i>Women's email: share who bought</span></div>
+      <div class="stat"><b class="countup" data-to="114" data-d="0" data-pre="$">0</b><span>Average spend per buyer, about the same in every group</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 01 RESEARCH QUESTION ============ -->
+<section class="chapter" id="rq" data-title="Research question">
+  <div class="wrap">
+    <header><p class="label">01 · Research question <span class="rub">Rubric: research questions</span></p><h2>Three questions, one experiment</h2></header>
+    <p>A retailer emails customers to make money. Most analyses stop at "did the email work?". We go further: <b>how</b> it worked, and <b>for whom</b>. That tells a marketer whether to chase more buyers or bigger orders, and whom to send which email.</p>
+    <div class="rq"><span class="n">Q1</span><div><h3>Does each email raise revenue per customer emailed?</h3><p>Outcome: dollars spent in two weeks, averaged over everyone, buyers or not.</p></div></div>
+    <div class="rq"><span class="n">Q2</span><div><h3>Is the lift from more people buying, or from buyers spending more?</h3><p>Revenue per customer = (share who buy) × (average spend per buyer). We estimate each factor's contribution, with uncertainty.</p></div></div>
+    <div class="rq"><span class="n">Q3</span><div><h3>Does it matter whether the email matches what the customer bought before?</h3><p>Customers are grouped by their purchases in the past year (men's, women's, or both), recorded before the email was sent.</p></div></div>
+    <div class="can">
+      <div class="panel"><h3><span class="ok-i">✓</span>What these variables can establish</h3>
+        <div class="kv"><span><b>Causal effects</b> of each email on visits, purchases and spend over two weeks: the email was assigned at random, so the groups differ only by chance and by the email.</span></div>
+        <div class="kv"><span><b>Effects within groups</b> defined by pre-email variables (past purchases), because grouping on something fixed before randomization keeps each comparison randomized.</span></div></div>
+      <div class="panel"><h3><span class="no-i">✕</span>What they cannot establish</h3>
+        <div class="kv"><span><b>Long-run effects</b>: we only see two weeks, with no repeat purchases and no unsubscribes.</span></div>
+        <div class="kv"><span><b>Why</b> an email works (subject line? images? timing?): only the email type varies.</span></div>
+        <div class="kv"><span><b>Effects of a visit</b> on buying: visiting is itself caused by the email, so comparing visitors with non-visitors is not randomized.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 DATA ============ -->
+<section class="chapter alt" id="data" data-title="The data">
+  <div class="wrap">
+    <header><p class="label">02 · Data understanding <span class="rub">Rubric: data understanding</span></p><h2>One row is one customer</h2></header>
+    <div class="grid2">
+      <div class="panel">
+        <h3>Variables</h3>
+        <div class="scroll"><table class="dict">
+          <tr><th>Column</th><th>Meaning</th><th>Role</th></tr>
+          <tr><td>segment</td><td>Email received: men's, women's, or none (randomized)</td><td>treatment</td></tr>
+          <tr><td>visit</td><td>1 if the customer visited the website within two weeks</td><td>outcome</td></tr>
+          <tr><td>conversion</td><td>1 if the customer bought anything within two weeks</td><td>outcome</td></tr>
+          <tr><td>spend</td><td>Dollars spent within two weeks ($0 for non-buyers)</td><td>outcome</td></tr>
+          <tr><td>mens, womens</td><td>1 if bought men's / women's merchandise in the past year</td><td>pre-email (Q3 groups)</td></tr>
+          <tr><td>recency</td><td>Months since last purchase (1–12)</td><td>pre-email (balance check)</td></tr>
+          <tr><td>history</td><td>Dollars spent in the past year</td><td>pre-email (balance check)</td></tr>
+          <tr><td>newbie</td><td>1 if a new customer in the past 12 months</td><td>pre-email (balance check)</td></tr>
+          <tr><td>channel, zip_code</td><td>Purchase channel; urban / suburban / rural</td><td>descriptive only</td></tr>
+        </table></div>
+        <p class="note">Source: K. Hillstrom, MineThatData E-Mail Analytics and Data Mining Challenge (2008), via the course dataset page. 64,000 rows, 12 columns. <code>history_segment</code> is a binned copy of <code>history</code>, so we do not use it.</p>
+      </div>
+      <div>
+        <div class="fig short"><svg id="ecdf" aria-label="Distribution of spend among buyers"></svg></div>
+        <p class="note"><b>How to read:</b> for each arm, the line shows the share of buyers who spent at most $x. Lines that lie on top of each other mean buyers spend the same in every arm. Hover for values.</p>
+        <div class="panel" style="margin-top:12px">
+          <h3>Unusual data and what we decided</h3>
+          <div class="kv"><span>Missing values</span><b>none</b></div>
+          <div class="kv"><span>Customers who spent $0 → kept as $0: that is the true outcome</span><b id="zeroShare">–</b></div>
+          <div class="kv"><span>Minimum purchase $29.99 (floor) → kept; noted as a limitation</span><b>136 buyers</b></div>
+          <div class="kv"><span>Spend capped at $499 → kept; basket estimates slightly truncated</span><b>12 buyers</b></div>
+          <div class="kv"><span>Did randomization work? Largest |T| of 10 covariate tests</span><b id="balT">–</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 APPROACH ============ -->
+<section class="chapter" id="approach" data-title="Approach">
+  <div class="wrap">
+    <header><p class="label">03 · Concepts and approach <span class="rub">Rubric: concepts and approach</span></p><h2>Three course concepts, one per job</h2></header>
+    <div class="grid3">
+      <div class="concept-card"><span class="lec">Lecture 8</span><h3>Welch's t-test + Bonferroni</h3>
+        <dl><dt>Answers</dt><dd>Q1: is the revenue difference real?</dd><dt>Why this method</dt><dd>It compares two means without assuming equal variances. The arms' spend variances differ.</dd><dt>Assumes</dt><dd>Independent customers; the CLT makes the mean difference ≈ normal. Checked in chapter 08.</dd><dt>Why the correction</dt><dd>We run 3 tests. Bonferroni keeps the chance of any false alarm ≤ 5%.</dd></dl></div>
+      <div class="concept-card"><span class="lec">Lecture 11</span><h3>Bayesian Beta–Binomial</h3>
+        <dl><dt>Answers</dt><dd>Q1 and Q3: how likely is it that one email converts better than another?</dd><dt>Why this method</dt><dd>Buying is a yes/no outcome, a Bernoulli trial. The Beta prior is conjugate, so the posterior has a closed form, and it gives direct probability statements like P(θ<sub>men</sub> > θ<sub>ctrl</sub>).</dd><dt>Assumes</dt><dd>Customers in an arm share one buying probability θ; the prior is reasonable. Checked with four priors.</dd></dl></div>
+      <div class="concept-card"><span class="lec">Lecture 9</span><h3>Nonparametric bootstrap</h3>
+        <dl><dt>Answers</dt><dd>Q2: how much of the lift is buyers vs basket, with a confidence interval?</dd><dt>Why this method</dt><dd>The buyer and basket ratios are ratios of ratios. No simple formula gives their standard error; resampling does.</dd><dt>Assumes</dt><dd>The sample represents the population; customers are independent; each arm is resampled separately, as randomized.</dd></dl></div>
+    </div>
+    <div class="grid2" style="margin-top:22px">
+      <div class="panel"><h3>Notation (as in the lecture notes)</h3>
+        <div class="scroll"><table class="notation">
+          <tr><td>n<sub>T</sub>, n<sub>C</sub></td><td>customers in the email (treatment) arm and the control arm</td></tr>
+          <tr><td>X̄<sub>T</sub>, S<sub>T</sub><sup>2</sup></td><td>sample mean and unbiased sample variance of spend in arm T</td></tr>
+          <tr><td>μ<sub>T</sub>, μ<sub>C</sub></td><td>true mean revenue per customer; H<sub>0</sub>: μ<sub>T</sub> = μ<sub>C</sub> vs H<sub>1</sub>: μ<sub>T</sub> ≠ μ<sub>C</sub></td></tr>
+          <tr><td>θ, h, n</td><td>buying probability; number of buyers h among n customers</td></tr>
+          <tr><td>α<sub>0</sub>, β<sub>0</sub></td><td>Beta prior parameters</td></tr>
+          <tr><td>p, m</td><td>share who buy; mean spend per buyer (so μ = p·m)</td></tr>
+          <tr><td>B, θ̂<sup>*(b)</sup></td><td>number of bootstrap replicates; statistic on replicate b</td></tr>
+        </table></div></div>
+      <div class="panel"><h3>Different from Mission 02</h3><p class="small">This analysis is about <b>inference on a randomized experiment</b>: tests, posterior probabilities and resampling. Mission 02 (concrete) is about <b>regression and model selection</b>: least squares, diagnostics, AIC/BIC, cross-validation, ridge and lasso. Only basic summaries and plots are shared.</p>
+        <p class="small">Every method is our own function in <code>src/asda/stats_tools.py</code>, unit-tested against SciPy (chapter 11).</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 WELCH ============ -->
+<section class="chapter alt" id="welch" data-title="Welch t-test">
+  <div class="wrap">
+    <header><p class="label">04 · Concept 1 · Lecture 8 · Welch's t-test and p-hacking</p><h2>Both emails raise revenue</h2></header>
+    <div class="explain">
+      <div class="ex"><b>What we do</b><p>Compare mean spend per customer between two arms, and ask whether the gap is bigger than chance would produce.</p></div>
+      <div class="ex"><b>In symbols</b><p>T<sub>W</sub> = (X̄<sub>T</sub> − X̄<sub>C</sub>) / √(S<sub>T</sub>²/n<sub>T</sub> + S<sub>C</sub>²/n<sub>C</sub>). Under H<sub>0</sub>, T<sub>W</sub> ≈ t with Welch–Satterthwaite df.</p></div>
+      <div class="ex"><b>How to read the chart</b><p>The black curve is what T<sub>W</sub> looks like if the email does nothing. The coloured line is what we observed. Far into the shaded tails means very unlikely under H<sub>0</sub>.</p></div>
+      <div class="ex"><b>Watch out</b><p>Every extra test is another chance of a false alarm. Press "Run 20 fake tests" below to see it happen.</p></div>
+    </div>
+    <div class="controls"><div class="seg" id="segWelch" role="group" aria-label="Comparison"></div></div>
+    <div class="grid2 even">
+      <div>
+        <div class="fig short"><svg id="tplot" aria-label="Welch t statistic against its null distribution"></svg></div>
+        <div class="formula" id="welchFormula"></div>
+      </div>
+      <div class="panel">
+        <h3>Three tests, one correction</h3>
+        <div class="scroll"><table id="welchTab"></table></div>
+        <p class="note">Bonferroni: reject H<sub>0</sub> when <i class="v">p</i> ≤ α/<i class="v">m</i>, with <i class="v">m</i> = 3 tests (equivalently, multiply p by 3).</p>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:24px">
+      <div>
+        <div class="controls"><button class="btn sm solid" id="aaRun" type="button">Run 20 fake tests</button><span class="note" id="aaNote">Splits the no-email group at random into two halves, 20 times. Nobody got an email, so any "significant" result is a false positive.</span></div>
+        <div class="fig short"><svg id="aaPlot" aria-label="p-values from A/A tests"></svg></div>
+      </div>
+      <div class="panel">
+        <h3>Why we correct</h3>
+        <div class="kv"><span>Fake tests run so far</span><b id="aaN">0</b></div>
+        <div class="kv"><span>Batches with ≥1 false positive at α = 0.05</span><b id="aaRaw">–</b></div>
+        <div class="kv"><span>…with Bonferroni α/20</span><b id="aaBonf">–</b></div>
+        <p class="note">Theory: with 20 tests at α = 0.05, 1 − 0.95<sup>20</sup> ≈ 64% of batches contain a false discovery. Bonferroni brings that back to about 5%.</p>
+      </div>
+    </div>
+    <p class="takeaway"><b>Takeaway</b>Both emails raise revenue per customer, and that survives the correction. "Men's beats women's" on revenue does not: p = 0.03 alone, 0.09 after correcting for 3 tests.</p>
+  </div>
+</section>
+
+<!-- ============ 05 BAYES ============ -->
+<section class="chapter" id="bayes" data-title="Bayesian updating">
+  <div class="wrap">
+    <header><p class="label">05 · Concept 2 · Lecture 11 · Beta–Binomial updating</p><h2>Feed the posterior, watch it learn</h2></header>
+    <div class="explain">
+      <div class="ex"><b>What we do</b><p>Treat each arm's buying probability θ as unknown, start from a prior belief, and update it with every customer we see.</p></div>
+      <div class="ex"><b>In symbols</b><p>θ ~ Beta(α<sub>0</sub>, β<sub>0</sub>); after h buyers among n: θ | <b>x</b> ~ Beta(α<sub>0</sub> + h, β<sub>0</sub> + n − h). Add buyers to α, non-buyers to β.</p></div>
+      <div class="ex"><b>How to read the chart</b><p>Each curve shows the plausible values of θ for one arm. Narrow means certain; curves that do not overlap mean a clear difference.</p></div>
+      <div class="ex"><b>Try this</b><p>Press ▶ Play: the curves start flat and sharpen as customers arrive. Switch to "Sceptical": the answer hardly moves, so the data, not the prior, drive it.</p></div>
+    </div>
+    <div class="controls">
+      <div class="seg" id="segPrior" role="group" aria-label="Prior"></div>
+      <div class="seg" id="segGroup" role="group" aria-label="Customers"></div>
+      <label class="range">Customers seen <input id="frac" type="range" min="0" max="1000" value="1000"><b id="fracLab">100%</b></label>
+      <button class="btn sm solid" id="play" type="button">▶ Play from zero</button>
+    </div>
+    <div class="grid2">
+      <div><div class="fig" style="min-height:min(420px,46vh)"><svg id="post" aria-label="Posterior densities"></svg></div></div>
+      <div>
+        <div class="panel"><h3>Monte Carlo from the posteriors</h3><div id="probs"></div></div>
+        <div class="fig short" style="margin-top:14px;min-height:160px"><svg id="trace" aria-label="Probability trace during play"></svg></div>
+        <p class="note" id="priorNote"></p>
+      </div>
+    </div>
+    <p class="takeaway"><b>Takeaway</b>On conversion, the men's email beats both the control and the women's email with posterior probability above 0.999, under every prior we tried. Buying is a 0/1 outcome, far less noisy than dollars, which is why it separates the emails when revenue could not.</p>
+  </div>
+</section>
+
+<!-- ============ 06 BOOTSTRAP ============ -->
+<section class="chapter alt" id="boot" data-title="Bootstrap">
+  <div class="wrap">
+    <header><p class="label">06 · Concept 3 · Lecture 9 · Nonparametric bootstrap</p><h2>Split the lift: buyers × basket</h2></header>
+    <div class="explain">
+      <div class="ex"><b>What we do</b><p>Split the revenue ratio into a buyer effect and a basket effect: μ<sub>T</sub>/μ<sub>C</sub> = (p<sub>T</sub>/p<sub>C</sub>) · (m<sub>T</sub>/m<sub>C</sub>).</p></div>
+      <div class="ex"><b>The algorithm</b><p>For b = 1…B: resample each arm's customers with replacement, recompute all three ratios → θ̂<sup>*(b)</sup>. The 2.5% and 97.5% quantiles give a 95% CI.</p></div>
+      <div class="ex"><b>How to read the chart</b><p>Each histogram is the spread of one ratio across resamples; the shaded band is its 95% CI. The dashed line at 1× means "no effect".</p></div>
+      <div class="ex"><b>Why not a formula?</b><p>A ratio of ratios has no simple standard error. The bootstrap needs only the data and a computer.</p></div>
+    </div>
+    <div class="controls">
+      <div class="seg" id="segEmail" role="group" aria-label="Email"></div>
+      <div class="seg" id="segB" role="group" aria-label="Replicates"></div>
+      <button class="btn sm solid" id="bootRun" type="button">Resample live</button>
+      <span class="note" id="bootStatus"></span>
+    </div>
+    <div class="grid3" id="bootFigs"></div>
+    <div class="stats" id="bootStats"></div>
+    <p class="takeaway"><b>Takeaway</b>Revenue roughly doubles, and essentially all of it comes from more buyers. The basket ratio's interval includes 1: buyers spend the same with or without the email.</p>
+  </div>
+</section>
+
+<!-- ============ 07 Q3 ============ -->
+<section class="chapter" id="groups" data-title="Who responds">
+  <div class="wrap">
+    <header><p class="label">07 · Answering Q3 · Beta–Binomial within groups</p><h2>The women's email misses men's buyers</h2></header>
+    <div class="explain three">
+      <div class="ex"><b>What we do</b><p>Repeat the Beta–Binomial comparison inside three groups of customers, defined by what they bought <b>before</b> the email.</p></div>
+      <div class="ex"><b>How to read the chart</b><p>Each dot is the posterior mean of the lift θ<sub>email</sub> − θ<sub>control</sub> (percentage points), with its 95% credible interval. An interval crossing the dashed zero line means no clear effect.</p></div>
+      <div class="ex"><b>Caution</b><p>These are 6 extra comparisons we did not plan in advance. We treat them as exploratory and confirm them with Bonferroni-corrected Welch tests.</p></div>
+    </div>
+    <div class="grid2">
+      <div><div class="fig tall"><svg id="forest" aria-label="Conversion lift by past purchases"></svg></div></div>
+      <div class="panel">
+        <h3>Key numbers</h3>
+        <div id="forestKV"></div>
+        <h3 style="margin-top:16px">Welch check on revenue (Bonferroni, 6 tests)</h3>
+        <div class="scroll"><table id="subTab"></table></div>
+      </div>
+    </div>
+    <p class="takeaway"><b>Takeaway</b>Matching is not the story. The women's email does nothing for past men's-only buyers, while the men's email works on every group, including past women's buyers.</p>
+  </div>
+</section>
+
+<!-- ============ 08 VALIDATION ============ -->
+<section class="chapter alt" id="check" data-title="Validation">
+  <div class="wrap">
+    <header><p class="label">08 · Validation · checking our own assumptions <span class="rub">Rubric: interpretation</span></p><h2>Can we trust the machinery?</h2></header>
+    <div class="grid2">
+      <div><div class="fig"><svg id="clt" aria-label="Bootstrap distribution vs normal approximation"></svg></div>
+        <p class="note"><b>How to read:</b> the bars are the bootstrap distribution of the mean difference; the curve is the normal approximation Welch's test assumes. If they match, the test is trustworthy.</p></div>
+      <div>
+        <div class="panel"><h3>Check 1 · CLT with 99% zeros</h3><div id="cltKV"></div></div>
+        <div class="panel" style="margin-top:12px"><h3>Check 2 · Randomization balance</h3><p class="small">Welch t-statistics comparing each email arm with control on variables fixed <b>before</b> the email. If randomization worked these look like N(0,1) noise: all |T| &lt; 2.</p><div class="scroll"><table id="balTab"></table></div></div>
+        <div class="panel" style="margin-top:12px"><h3>Check 3 · Prior sensitivity</h3><div id="priorTab"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 RESULTS ============ -->
+<section class="chapter" id="results" data-title="Results">
+  <div class="wrap">
+    <header><p class="label">09 · Results <span class="rub">Rubric: results</span></p><h2>The answers, with their uncertainty</h2></header>
+    <p class="small muted">Final numbers from <code>src/hillstrom_analysis.py</code> (seed 20261207, B = 10,000, 400,000 posterior draws). The live charts above use their own random draws, so they can differ in the last digit.</p>
+    <div class="scroll"><table id="resTab"></table></div>
+  </div>
+</section>
+
+<!-- ============ 10 INTERPRETATION ============ -->
+<section class="chapter alt" id="end" data-title="Interpretation">
+  <div class="wrap">
+    <header><p class="label">10 · Interpretation and limitations <span class="rub">Rubric: interpretation and limitations</span></p><h2>What the data can and cannot establish</h2></header>
+    <div class="grid2 even">
+      <div class="panel" style="background:#eef5fd;border-color:#d4e5f8">
+        <h3>What we conclude, and why it is credible</h3>
+        <div class="kv"><span><b>Causal, not just correlation.</b> The email was randomized (balance check passed), so differences between arms are effects of the email.</span></div>
+        <div class="kv"><span><b>Robust across methods.</b> Welch (frequentist), Beta–Binomial (Bayesian) and the bootstrap agree on direction and size.</span></div>
+        <div class="kv"><span><b>Uncertainty is reported.</b> Every effect has a CI or credible interval, and multiple testing is corrected.</span></div>
+        <div class="kv"><span><b>Honest inconclusive results.</b> Men's vs women's on revenue, and the basket effect, are not distinguishable from zero.</span></div>
+      </div>
+      <div class="panel">
+        <h3>Limits</h3>
+        <div class="kv"><span><b>Two-week window</b>: no long-run, repeat-purchase or unsubscribe effects.</span></div>
+        <div class="kv"><span><b>Truncated spend</b>: floored at $29.99 and capped at $499, so the basket estimates are slightly compressed.</span></div>
+        <div class="kv"><span><b>Few buyers</b> (578): "no basket effect" means "no large one". The CI allows about ±20%.</span></div>
+        <div class="kv"><span><b>Exploratory subgroups</b>, and one retailer in 2008: results may not generalize to other firms or years.</span></div>
+        <div class="kv"><span><b>Constant θ per arm</b> is a simplification: buying probability surely varies by customer.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 CODE + BOARD ============ -->
+<section class="chapter" id="code" data-title="Code and board">
+  <div class="wrap">
+    <header><p class="label">11 · Code, tests and the board <span class="rub">Rubric: code · Q&amp;A</span></p><h2>Find it, test it, derive it</h2></header>
+    <div class="grid2">
+      <div class="panel"><h3>Where each method lives</h3><div class="scroll"><table class="dict">
+        <tr><th>Function (src/asda/stats_tools.py)</th><th>What it does</th><th>Unit test</th></tr>
+        <tr><td>welch_t</td><td>T<sub>W</sub>, Welch df, p, 95% CI</td><td>matches scipy.stats.ttest_ind</td></tr>
+        <tr><td>bonferroni</td><td>p × m, reject decisions</td><td>hand-computed example</td></tr>
+        <tr><td>bootstrap_two_sample</td><td>resamples each arm, B replicates</td><td>bootstrap SE ≈ analytic SE</td></tr>
+        <tr><td>percentile_ci</td><td>2.5% / 97.5% quantiles</td><td>known answer on 1…1000</td></tr>
+        <tr><td>beta_posterior</td><td>Beta(α₀ + h, β₀ + n − h)</td><td>sequential = batch update</td></tr>
+        <tr><td>prob_greater</td><td>Monte Carlo P(θ<sub>A</sub> &gt; θ<sub>B</sub>)</td><td>= 0.5 for identical posteriors</td></tr>
+        <tr><td>decomposition_stats</td><td>revenue = buyers × basket</td><td>identity holds exactly</td></tr>
+      </table></div></div>
+      <div class="panel"><h3>Reproduce and demonstrate</h3>
+        <div class="kv"><span>Run the whole analysis</span><b><code>python src/hillstrom_analysis.py</code></b></div>
+        <div class="kv"><span>Run all 31 tests</span><b><code>python -m pytest</code></b></div>
+        <div class="kv"><span>Fixed seed, so every number reproduces</span><b>20261207</b></div>
+        <p class="small">Or run all of it live in this browser, including the tests:</p>
+        <a class="btn sm solid" href="lab.html#email">Open the Code Lab</a></div>
+    </div>
+    <div class="board" style="margin-top:20px">
+      <div class="panel"><h3>At the board · Beta–Binomial</h3>
+        <div class="step">p(θ) ∝ θ<sup>α₀−1</sup>(1−θ)<sup>β₀−1</sup></div><div class="step">p(<b>x</b>|θ) ∝ θ<sup>h</sup>(1−θ)<sup>n−h</sup></div>
+        <div class="step">p(θ|<b>x</b>) ∝ θ<sup>α₀+h−1</sup>(1−θ)<sup>β₀+n−h−1</sup></div><div class="step">⇒ Beta(α₀ + h, β₀ + n − h)</div>
+        <p class="note">Men's email: Beta(1 + 267, 1 + 21,040) = Beta(268, 21,041).</p></div>
+      <div class="panel"><h3>At the board · Welch</h3>
+        <div class="step">Var(X̄<sub>T</sub> − X̄<sub>C</sub>) = σ<sub>T</sub>²/n<sub>T</sub> + σ<sub>C</sub>²/n<sub>C</sub></div><div class="step">plug in S², then T<sub>W</sub> = diff / SE</div>
+        <div class="step">= 0.770 / 0.145 = 5.30</div><div class="step">Bonferroni: p<sub>adj</sub> = min(1, 3p)</div>
+        <p class="note">Independent arms ⇒ the variances add.</p></div>
+      <div class="panel"><h3>At the board · Bootstrap</h3>
+        <div class="step">for b = 1, …, B:</div><div class="step">  X<sub>T</sub><sup>*(b)</sup> ← n<sub>T</sub> draws with replacement</div>
+        <div class="step">  θ̂<sup>*(b)</sup> = ratios on (X<sub>T</sub><sup>*(b)</sup>, X<sub>C</sub><sup>*(b)</sup>)</div><div class="step">SE<sub>boot</sub> = SD(θ̂<sup>*(1)</sup>, …, θ̂<sup>*(B)</sup>)</div>
+        <p class="note">CI = 2.5% and 97.5% quantiles of θ̂<sup>*</sup>.</p></div>
+    </div>
+    <div class="cta" style="display:flex;flex-wrap:wrap;gap:14px;margin-top:26px"><a class="btn solid" href="concrete.html">Mission 02 · Concrete</a><a class="btn" href="index.html#rubric">Rubric map</a></div>
+  </div>
+</section>
+
+<footer class="site"><div class="wrap"><span>Data: K. Hillstrom, MineThatData E-Mail Analytics Challenge (2008). Every chart on this page is computed in your browser.</span><a href="https://github.com/sahiljangra12/asda-final-project">Source on GitHub</a></div></footer>
+<script src="assets/js/core.js?v=1795748352"></script>
+<script src="assets/js/email-tech.js?v=2"></script>
+<script defer src="https://sahiljangra12.github.io/ask/ask.js" data-site="ASDA Final Project" data-claude="on"></script>
+</body>
+</html>
