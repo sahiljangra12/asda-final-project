@@ -73,7 +73,7 @@ s.addText("More buyers, not bigger baskets", { placeholder: "title" });
 s.addText([
   { text: "What a randomized email test of 64,000 customers can and cannot tell us", options: { breakLine: true } },
   { text: " ", options: { breakLine: true, fontSize: 8 } },
-  { text: "Sahil · Teammate 2 · Teammate 3 · Teammate 4", options: { breakLine: true, fontSize: 13 } },
+  { text: "Sahil · Zimo · Feipeng Liu · Sreekar · Shounak", options: { breakLine: true, fontSize: 13 } },
   { text: "EN.553.413/613 Applied Statistics and Data Science I · Final project presentation · December 2026", options: { fontSize: 11 } },
 ], { placeholder: "body" });
 note(s, "Sahil", "We analyse the Hillstrom email experiment. Customers were randomly sent a men's email, a women's email, or nothing. Our headline: the emails create more buyers, not bigger baskets. We use three course concepts: Welch's t-test with a multiple-testing correction, Bayesian Beta-Binomial updating, and the nonparametric bootstrap.");
@@ -107,7 +107,7 @@ kicker(s, "Sample means with 95% confidence intervals (CLT), by randomized arm")
 fig(s, "H1_funnel.png", 0.5, 1.4, 9.0, 3.317, "Funnel by arm");
 tb(s, `Revenue per customer: ${usd(C0.revenue_per_customer)} (control), ${usd(M.revenue_per_customer)} (men's), ${usd(W.revenue_per_customer)} (women's). Mean spend per buyer: $${C0.basket.toFixed(0)}, $${M.basket.toFixed(0)}, $${W.basket.toFixed(0)}.`,
   { x: 0.5, y: 4.3, w: 9.0, h: 0.7, fontSize: 14 });
-note(s, "Teammate 2", "Bars are sample means with 95% intervals from the CLT. Both emails lift each stage of the funnel. But the mean spend among buyers is about the same in every arm, which motivates Q2: where does the revenue lift come from?");
+note(s, "Zimo", "Bars are sample means with 95% intervals from the CLT. Both emails lift each stage of the funnel. But the mean spend among buyers is about the same in every arm, which motivates Q2: where does the revenue lift come from?");
 
 // =====================================================================
 pres.addSection({ title: "Concept 1: Welch t-test" });
@@ -127,7 +127,7 @@ s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 5.2, y: 3.4, w: 4.3, h: 1.6, fill
 tb(s, [{ text: "The p-hacking trap", options: { bold: true, breakLine: true } },
   { text: `Men's vs women's has p = ${wMW.p.toFixed(3)}: "significant" alone, but ${wMW.p_bonf.toFixed(3)} after correcting for the 3 tests we ran. On revenue, we cannot rank the two emails.` }],
   { x: 5.4, y: 3.5, w: 3.95, h: 1.45, fontSize: 13, paraSpaceAfter: 4 });
-note(s, "Teammate 2", "Primary family of three tests on revenue per customer. Welch because the arm variances differ. Bonferroni multiplies each p-value by 3. Both emails clearly beat control. The men's-vs-women's comparison would look significant on its own but not after correction: that is exactly the p-hacking issue from Lecture 8. On the board: T_W = 0.770 / 0.145 = 5.30.");
+note(s, "Zimo", "Primary family of three tests on revenue per customer. Welch because the arm variances differ. Bonferroni multiplies each p-value by 3. Both emails clearly beat control. The men's-vs-women's comparison would look significant on its own but not after correction: that is exactly the p-hacking issue from Lecture 8. On the board: T_W = 0.770 / 0.145 = 5.30.");
 
 // =====================================================================
 pres.addSection({ title: "Concept 2: Bayesian updating" });
@@ -142,7 +142,7 @@ s.addTable([
   { x: 6.4, y: 1.45, w: 3.1, colW: [1.05, 0.75, 1.3], fontSize: 11, fontFace: THEME.bodyFontFace, color: S.text1, border: { type: "solid", pt: 0.5, color: "E3E3E3" }, objectName: "posterior table" });
 tb(s, `Unlike revenue, conversion separates the emails: buying is a 0/1 outcome with far less noise than dollar spend. Results are unchanged under Jeffreys, a 1% informative prior, and a sceptical prior centred on "no effect" worth 5,000 customers.`,
   { x: 6.4, y: 3.4, w: 3.1, h: 1.7, fontSize: 12 });
-note(s, "Teammate 3", "Conjugacy: Beta prior times Binomial likelihood gives a Beta posterior, so updating is just adding buyers to alpha and non-buyers to beta. We estimate P(theta_A > theta_B) by drawing 400,000 values from each posterior. The difference in conversion between the two emails is clear, while the revenue difference was not: dollars are much noisier than 0/1 purchases. Prior sensitivity: even a sceptical prior centred at the control rate, worth 5,000 customers, leaves the probabilities above 0.999. Live demo: the interactive explorer lets you change the prior and the amount of data.");
+note(s, "Feipeng Liu", "Conjugacy: Beta prior times Binomial likelihood gives a Beta posterior, so updating is just adding buyers to alpha and non-buyers to beta. We estimate P(theta_A > theta_B) by drawing 400,000 values from each posterior. The difference in conversion between the two emails is clear, while the revenue difference was not: dollars are much noisier than 0/1 purchases. Prior sensitivity: even a sceptical prior centred at the control rate, worth 5,000 customers, leaves the probabilities above 0.999. Live demo: the interactive explorer lets you change the prior and the amount of data.");
 
 // ---------- heterogeneity ----------
 s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Concept 2: Bayesian updating" });
@@ -157,7 +157,7 @@ tb(s, [
   { text: "The men's email lifts every group", options: { bullet: true, breakLine: true } },
   { text: "Exploratory: 6 subgroup Welch tests agree after Bonferroni, but subgroups were not pre-registered", options: { bullet: true, italic: true } },
 ], { x: 6.65, y: 1.4, w: 2.85, h: 3.6, fontSize: 12.5, paraSpaceAfter: 6 });
-note(s, "Teammate 3", "Same Beta-Binomial machinery, run within groups defined by what customers bought before randomization. That keeps the comparison randomized within each group. The women's email does essentially nothing for customers who only bought men's merchandise. Among women's buyers, the men's email does as well as the women's email. We flag this as exploratory: six subgroup comparisons, so we checked them with Bonferroni too.");
+note(s, "Feipeng Liu", "Same Beta-Binomial machinery, run within groups defined by what customers bought before randomization. That keeps the comparison randomized within each group. The women's email does essentially nothing for customers who only bought men's merchandise. Among women's buyers, the men's email does as well as the women's email. We flag this as exploratory: six subgroup comparisons, so we checked them with Bonferroni too.");
 
 // =====================================================================
 pres.addSection({ title: "Concept 3: Bootstrap" });
@@ -169,7 +169,7 @@ stat(s, 6.6, 1.4, 2.9, Math.abs(bM.buyer_share.obs - 1) < 0.05 ? "≈100%" : `${
 stat(s, 6.6, 2.6, 2.9, `${(100 * bW.buyer_share.obs).toFixed(0)}%`, `for the women's email (95% CI ${(100 * bW.buyer_share.lo).toFixed(0)}–${(100 * bW.buyer_share.hi).toFixed(0)}%)`, HEX.accent2);
 tb(s, `Basket ratios ${bM.basket_ratio.obs.toFixed(2)} and ${bW.basket_ratio.obs.toFixed(2)}: both CIs include 1. Why the bootstrap: no simple formula gives the SE of a ratio of ratios.`,
   { x: 6.6, y: 3.8, w: 2.9, h: 1.25, fontSize: 12 });
-note(s, "Teammate 4", "Revenue per customer is conversion probability times mean spend per buyer, so the revenue ratio factors exactly into a buyer ratio times a basket ratio. Taking logs makes it additive. The sampling distribution of these ratios has no easy closed form, so we use the nonparametric bootstrap: resample each arm with replacement, keeping arm sizes fixed as in the randomized design, recompute all three ratios on the same resample, and take percentiles. Result: the basket effect is indistinguishable from 1; essentially the whole lift comes from more people buying.");
+note(s, "Sreekar", "Revenue per customer is conversion probability times mean spend per buyer, so the revenue ratio factors exactly into a buyer ratio times a basket ratio. Taking logs makes it additive. The sampling distribution of these ratios has no easy closed form, so we use the nonparametric bootstrap: resample each arm with replacement, keeping arm sizes fixed as in the randomized design, recompute all three ratios on the same resample, and take percentiles. Result: the basket effect is indistinguishable from 1; essentially the whole lift comes from more people buying.");
 
 // ---------- validation ----------
 s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Concept 3: Bootstrap" });
@@ -178,7 +178,7 @@ kicker(s, "Does the CLT really hold for spend that is 99% zeros? Bootstrap SE vs
 fig(s, "H6_bootstrap_vs_clt.png", 0.8, 1.4, 8.4, 2.859, "Bootstrap vs CLT");
 tb(s, `Men's: bootstrap SE ${bM.diff.se_boot.toFixed(3)} vs Welch ${bM.welch_se.toFixed(3)}. Women's: ${bW.diff.se_boot.toFixed(3)} vs ${bW.welch_se.toFixed(3)}. Agreement within 2%: the normal approximation behind T_W is safe here.`,
   { x: 0.5, y: 4.45, w: 9.0, h: 0.7, fontSize: 14 });
-note(s, "Teammate 4", "A sanity check that links two concepts. If the CLT approximation were poor, the bootstrap distribution of the mean difference would be skewed and its SE would differ from Welch's. They match closely, so the Welch tests on slide 4 are trustworthy. Our code also has 31 unit tests: for example, our Welch function matches scipy, our Beta update gives the same answer sequentially and in one batch, and the revenue identity holds exactly.");
+note(s, "Sreekar", "A sanity check that links two concepts. If the CLT approximation were poor, the bootstrap distribution of the mean difference would be skewed and its SE would differ from Welch's. They match closely, so the Welch tests on slide 4 are trustworthy. Our code also has 31 unit tests: for example, our Welch function matches scipy, our Beta update gives the same answer sequentially and in one batch, and the revenue identity holds exactly.");
 
 // =====================================================================
 pres.addSection({ title: "Conclusion" });
@@ -199,7 +199,7 @@ col2(5.15, "Limits", [
   "Spend capped at $499 and floored at $29.99, so basket estimates are truncated",
   `Only ${M.conversions} and ${W.conversions} buyers: basket CIs are wide, so "no basket effect" means "no large one"`,
   "Subgroup results are exploratory; a 2008 retailer may not generalize"], HEX.lt2);
-note(s, "Sahil", "Summary. Because assignment was random, the differences between arms are causal effects of the emails over two weeks. Our main finding, more buyers rather than bigger baskets, is supported by two independent methods: the bootstrap decomposition and the stable basket sizes. Limits: short window, truncated spend, few buyers, and exploratory subgroups. Questions welcome; the interactive explorer and all code are in our submission.");
+note(s, "Shounak", "Summary. Because assignment was random, the differences between arms are causal effects of the emails over two weeks. Our main finding, more buyers rather than bigger baskets, is supported by two independent methods: the bootstrap decomposition and the stable basket sizes. Limits: short window, truncated spend, few buyers, and exploratory subgroups. Questions welcome; the interactive explorer and all code are in our submission.");
 
 // ---------- closing ----------
 s = pres.addSlide({ masterName: "DARK_TITLE", sectionTitle: "Conclusion" });
@@ -208,7 +208,7 @@ s.addText([
   { text: "Try it live: the interactive explorer recomputes every posterior and bootstrap in the browser", options: { breakLine: true } },
   { text: "interactive/hillstrom_explorer.html · code: src/ · tests: python -m pytest", options: { fontSize: 13 } },
 ], { placeholder: "body" });
-note(s, "Sahil", "Open interactive/hillstrom_explorer.html for the live demo if time allows: switch to 'Past men's buyers' to show the women's email's posterior overlapping control, then slide 'Data used' down to 5% to show the posterior widening like 1/sqrt(n).");
+note(s, "Shounak", "Open interactive/hillstrom_explorer.html for the live demo if time allows: switch to 'Past men's buyers' to show the women's email's posterior overlapping control, then slide 'Data used' down to 5% to show the posterior widening like 1/sqrt(n).");
 
 // =====================================================================
 pres.addSection({ title: "Backup" });
@@ -245,7 +245,7 @@ s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Backup" });
 s.addText("Backup: evidence accumulates sequentially", { placeholder: "title" });
 kicker(s, "Lecture 11 · sequential updating reaches the same posterior as one batch update");
 fig(s, "H7_sequential.png", 0.5, 1.45, 9.0, 3.874, "Sequential updating");
-note(s, "Teammate 3", "Feeding customers in random order, the posterior probability that the men's email beats control is noisy for the first few hundred customers per arm and then settles above 0.95.");
+note(s, "Feipeng Liu", "Feeding customers in random order, the posterior probability that the men's email beats control is noisy for the first few hundred customers per arm and then settles above 0.95.");
 
 (async () => {
   await pres.writeFile({ fileName: OUT });

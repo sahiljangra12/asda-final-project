@@ -13,7 +13,7 @@
 
 Every number on the mission pages is computed in the browser from the data, so it can differ slightly from the report. The JavaScript uses its own random seeds and train/test split; the report's numbers come from the Python scripts below.
 
-Team: Sahil, Teammate 2, Teammate 3, Teammate 4
+Team: Sahil, Zimo, Feipeng Liu, Sreekar, Shounak
 
 Two analyses on two different datasets from the course collection, each built on different course concepts:
 
