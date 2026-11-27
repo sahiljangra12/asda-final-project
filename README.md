@@ -40,7 +40,8 @@ python src/concrete_analysis.py      # ~1 min -> outputs/results/concrete_result
 python src/build_interactive.py      # -> interactive/hillstrom_explorer.html (open in any browser)
 python -m pytest                     # 31 unit tests / sanity checks
 cd report && latexmk -pdf report.tex # 4-page report; every number comes from macros.tex
-node slides/build_slides.js          # rebuild the deck from the results JSON (needs pptxgenjs)
+python slides/capture_screens.py     # with the site served on :8765: refresh the screen captures used in the deck
+node slides/build_slides.js          # rebuild the deck: slides 1-9 mirror email.html screens 1-9, then backup slides
 ```
 
 All random steps use fixed seeds (`SEED` at the top of each script), so every number in the report and slides is reproduced exactly.
