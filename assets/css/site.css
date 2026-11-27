@@ -252,3 +252,38 @@ details.math .f { font-family: "Times New Roman", serif; font-size: 18px; overfl
 @media (min-width: 901px) { #s1 .wrap > * { max-width: 50% } #s1 h1 { font-size: clamp(44px, 5vw, 76px) } }
 @media (max-width: 600px) { .eq { flex-wrap: wrap } .eq .tile { flex: 1 1 100% } }
 @media (max-width: 900px) { #s1 #heroDots { display: none } .wide-only { display: none } }
+
+/* ---------- presentation-day layer (talk.js) ---------- */
+.spk { display: inline-block; background: var(--ink); color: #fff; font: 600 12px/1 var(--head); letter-spacing: .12em; padding: 6px 9px; margin-right: 12px; vertical-align: 1px }
+.simple { margin-top: 20px; max-width: 60ch; background: #fff8e6; border-left: 5px solid #e8a317; padding: 14px 16px 12px }
+.simple p { margin: 0; font-size: clamp(16px, 1.25vw, 19px); line-height: 1.45 }
+.simple p b { display: block; font: 600 12px/1 var(--head); letter-spacing: .16em; text-transform: uppercase; color: #8a5d00; margin-bottom: 6px }
+.gws { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px }
+.gws span { font: 600 11px/1 var(--head); letter-spacing: .14em; text-transform: uppercase; color: var(--ink2); margin-right: 4px }
+.gw { font: 500 13.5px/1 var(--body, Barlow), sans-serif; border: 1px dashed #b98a12; background: #fff; color: var(--ink); padding: 5px 9px; cursor: help; border-radius: 99px }
+.gw:hover, .gw.open { background: #e8a317; color: #fff; border-style: solid }
+.gdef { position: fixed; z-index: 90; max-width: 320px; background: var(--ink); color: #fff; padding: 12px 14px; font-size: 14.5px; line-height: 1.45; opacity: 0; pointer-events: none; transition: opacity .15s }
+.gdef.show { opacity: 1 }
+.gdef b { display: block; font: 600 12px/1 var(--head); letter-spacing: .14em; text-transform: uppercase; color: #ffd27a; margin-bottom: 6px }
+.hud { position: fixed; top: 14px; right: 18px; z-index: 70; display: none; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--line); padding: 8px 10px 8px 14px; font: 600 14px/1 var(--head); letter-spacing: .08em; box-shadow: 0 4px 18px rgba(0,0,0,.08) }
+.hud.show { display: flex }
+.hud .clock { font-variant-numeric: tabular-nums; padding: 4px 8px; background: var(--steel) }
+.hud[data-state="qa"] .clock { background: #ffe4a3 } .hud[data-state="over"] .clock { background: #b4441a; color: #fff }
+.hud .reset { border: 0; background: none; cursor: pointer; font-size: 16px; color: var(--ink2) }
+html.present .nav { display: none }
+html.present .chapter, html.present .hero { padding-top: clamp(30px, 6vh, 70px) }
+.startov { position: fixed; inset: 0; z-index: 100; background: rgba(255,255,255,.97); display: grid; place-items: center; text-align: center; padding: 24px }
+.startov .say { max-width: none }
+@media print { .simple { break-inside: avoid } }
+html.present .slidenav { display: none }
+html.present .claim { font-size: clamp(30px, 3.3vw, 46px) }
+html.present .say { font-size: clamp(16px, 1.3vw, 19px); margin-top: 12px }
+html.present .simple { margin-top: 14px; padding: 10px 14px 9px }
+html.present .simple p { font-size: clamp(15px, 1.15vw, 17px) }
+html.present .proofs .proof { padding-top: 8px; padding-bottom: 8px }
+html.present .hero .wrap { padding-bottom: clamp(24px, 5vh, 60px) }
+html.present .hero h1 { font-size: clamp(40px, 5vw, 74px) }
+html.present .proofs { margin-top: 12px }
+#runshow th, #runshow td { text-align: left; white-space: normal; vertical-align: top }
+#runshow td:nth-child(4) { white-space: nowrap }
+#runshow td:last-child { min-width: 34ch; color: var(--ink2) }
