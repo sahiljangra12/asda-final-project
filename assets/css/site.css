@@ -153,3 +153,38 @@ footer.site .wrap { display: flex; flex-wrap: wrap; gap: 14px 28px; justify-cont
   .range input { width: 44vw }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important } }
+
+/* ---------- self-explaining blocks ---------- */
+.rub { display: inline-block; margin-left: 10px; padding: 4px 8px; border: 1px solid var(--ink); font: 600 11px/1 var(--head); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); vertical-align: 2px }
+.explain { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--ink); margin: 6px 0 22px }
+.explain.three { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+.ex { padding: 12px 18px 10px 0; font-size: 15px; line-height: 1.5 }
+.ex + .ex { padding-left: 18px; border-left: 1px solid var(--line) }
+.ex > b { display: block; font: 600 13px/1.2 var(--head); letter-spacing: .14em; text-transform: uppercase; color: var(--ink2); margin-bottom: 6px }
+.ex p { margin: 0 } .ex ul { margin: 0; padding-left: 18px } .ex li { margin: 2px 0 }
+.takeaway { margin: 18px 0 0; padding: 14px 18px; background: var(--ink); color: #fff; font-size: 16.5px; max-width: none }
+.takeaway b { font: 600 13px/1 var(--head); letter-spacing: .16em; text-transform: uppercase; margin-right: 10px; color: #9dc8f7 }
+.alt .takeaway { background: var(--ink) }
+.rq { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 4px 18px; padding: 18px 0; border-bottom: 1px solid var(--line); align-items: baseline }
+.rq .n { font: 700 44px/1 var(--head); color: var(--ink3) }
+.rq h3 { font-size: clamp(22px, 2.4vw, 30px); text-transform: none; letter-spacing: 0; line-height: 1.15 }
+.rq p { margin: 4px 0 0; color: var(--ink2); font-size: 15.5px }
+.can { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 22px }
+.can .panel h3 { display: flex; align-items: center; gap: 10px }
+.ok-i, .no-i { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; color: #fff; font-size: 15px; flex: none }
+.ok-i { background: #08734f } .no-i { background: #b4441a }
+.dict td:first-child { font-family: var(--mono); font-size: 13.5px; white-space: nowrap }
+.dict td { white-space: normal; text-align: left } .dict th { text-align: left }
+.concept-card { border: 1px solid var(--line); background: #fff; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px }
+.concept-card .lec { font: 600 12px/1 var(--head); letter-spacing: .16em; text-transform: uppercase; color: var(--ink2) }
+.concept-card h3 { font-size: 24px }
+.concept-card dl { margin: 4px 0 0; font-size: 14.5px } .concept-card dt { font-weight: 600; margin-top: 8px } .concept-card dd { margin: 2px 0 0; color: var(--ink2) }
+.notation td:first-child { font-family: "Times New Roman", serif; font-style: italic; font-size: 17px; white-space: nowrap }
+.notation td { text-align: left; white-space: normal }
+.board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px }
+.board .panel { font-size: 15px } .board .step { font-family: "Times New Roman", serif; font-size: 17px; padding: 3px 0; overflow-x: auto; white-space: nowrap }
+.rubmap td:first-child b { font-family: var(--head); letter-spacing: .06em; text-transform: uppercase; font-size: 15px }
+.rubmap td { white-space: normal; text-align: left } .rubmap td:nth-child(2) { text-align: right; white-space: nowrap }
+@media (max-width: 900px) { .explain, .explain.three { grid-template-columns: repeat(2, minmax(0, 1fr)) } .ex:nth-child(3) { padding-left: 0; border-left: 0 } .can, .board { grid-template-columns: 1fr } }
+@media (max-width: 600px) { .explain, .explain.three { grid-template-columns: 1fr } .ex + .ex { padding-left: 0; border-left: 0; border-top: 1px solid var(--line) } .rq { grid-template-columns: 40px minmax(0,1fr) } .rq .n { font-size: 30px } }
+.kv code { white-space: normal; overflow-wrap: anywhere }

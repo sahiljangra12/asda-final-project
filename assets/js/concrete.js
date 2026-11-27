@@ -228,10 +228,22 @@ const ageCol = age => AGE_RAMP[age <= 3 ? 0 : age <= 7 ? 1 : age <= 14 ? 2 : age
   [shareEl, wbEl].forEach(el => el.addEventListener("input", drawGain)); drawGain();
 
   /* ---------- 08 conclusion ---------- */
-  function fillEnd() { const g = l => cmpRows && cmpRows.find(r => r.lab === l); const wc = fitLaw(2, "wc");
-    $("#endKV").innerHTML = `<div class="kv"><span>Variance of log strength explained by w/b + age</span><b>${fmt(100 * lawAll.r2, 0)}%</b></div>
-      <div class="kv"><span>…by Abrams' original w/c + age</span><b>${fmt(100 * wc.r2, 0)}%</b></div><div class="kv"><span>Strength per +0.1 water/binder</span><b>−${fmt(pctPerTenth(lawAll.beta[1]), 0)}%</b></div>
-      ${g("w/b + binder composition") ? `<div class="kv"><span>Held-out error: law → + composition → best</span><b>${fmt(g("Abrams w/b + age").test, 3)} → ${fmt(g("w/b + binder composition").test, 3)} → ${fmt(Math.min(...cmpRows.map(r => r.test)), 3)}</b></div>` : ""}
-      <div class="kv"><span>First variables the lasso selects</span><b>w/b and log age</b></div>`; }
+  function fillEnd() {}
+  /* final, reproducible numbers from the Python analysis (same as the written report) */
+  fetch("outputs/results/concrete_results.json").then(r => r.json()).then(R => { const C = Object.fromEntries(R.comparison.map(c => [c.label, c])), L = R.law, pct = b => fmt(100 * (1 - Math.exp(b * 0.1)), 0);
+    const rows = [
+      ["Q1", "Slope of w/b, β̂₁ (log scale)", "OLS", `${fmt(L.beta[1])} (SE ${fmt(L.se[1])}), t = ${fmt(L.t_wb, 1)}`, `95% CI [${fmt(L.beta[1] - 1.96 * L.se[1])}, ${fmt(L.beta[1] + 1.96 * L.se[1])}]`, `−${pct(L.beta[1])}% strength per +0.1 w/b`],
+      ["Q1", "Same slope, 28-day tests only (independent)", "OLS", `${fmt(R.law28.beta[1])} (SE ${fmt(R.law28.se[1])})`, `n = ${R.law28.n}`, "Same slope, honest SE"],
+      ["Q1", "Variance explained, w/b + age vs w/c + age", "OLS", `R² = ${fmt(L.r2, 3)} vs ${fmt(R.law_wc_r2, 3)}`, "training recipes", "w/b is the better law"],
+      ["Q1", "Degree of age polynomial", "AIC / BIC / CV", `AIC ${R.d_aic} · BIC ${R.d_bic} · CV 1-SE ${R.d_cv1se}`, "CV errors within 1 SE", `use d = ${R.D}`],
+      ["Q2", "Held-out RMSE: law (4 coef.)", "Grouped CV + test", fmt(C["Abrams w/b + age"].test_rmse, 3), `CV ${fmt(Math.sqrt(C["Abrams w/b + age"].cv_mse), 3)}`, `≈ ${fmt(100 * C["Abrams w/b + age"].test_mape, 0)}% typical error`],
+      ["Q2", "Held-out RMSE: + binder composition (10)", "Grouped CV + test", fmt(C["w/b + binder mix + age"].test_rmse, 3), `CV ${fmt(Math.sqrt(C["w/b + binder mix + age"].cv_mse), 3)}`, "Best simple model"],
+      ["Q2", "Held-out RMSE: 7 raw amounts (10)", "Grouped CV + test", fmt(C["7 ingredients + age"].test_rmse, 3), `CV ${fmt(Math.sqrt(C["7 ingredients + age"].cv_mse), 3)}`, "Worse at equal size"],
+      ["Q2", "Held-out RMSE: quadratic 44 terms (OLS / ridge / lasso)", "CV-chosen λ", `${fmt(C["Quadratic (44 terms), OLS"].test_rmse, 3)} / ${fmt(C["Quadratic, ridge"].test_rmse, 3)} / ${fmt(C["Quadratic, lasso"].test_rmse, 3)}`, "λ_CV ≈ 0", "Shrinkage adds no accuracy"],
+      ["Q3", "First variables to enter the lasso", "Lasso path", R.lasso_entry_order.slice(0, 3).map(e => e[1]).join(", "), "ratios + raw amounts", "w/b chosen first"],
+      ["Q2", "30% slag: strength change at 28 d / 1 yr", "Binder model", `${fmt(R.replacement30["slag share|28"], 0)}% / +${fmt(R.replacement30["slag share|365"], 0)}%`, `R² = ${fmt(R.plus.r2, 3)}`, "Catches up with age"],
+      ["Q2", "30% fly ash: strength change at 28 d / 1 yr", "Binder model", `${fmt(R.replacement30["ash share|28"], 0)}% / ${fmt(R.replacement30["ash share|365"], 0)}%`, "association, not causal", "Partly recovers"],
+    ];
+    $("#resTab").innerHTML = `<tr><th>Q</th><th>Quantity</th><th>Method</th><th>Estimate</th><th>Uncertainty / note</th><th>Meaning</th></tr>` + rows.map(r => `<tr><td><b>${r[0]}</b></td><td style="text-align:left;white-space:normal">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td><b>${r[5]}</b></td></tr>`).join(""); });
   fillEnd();
 })();

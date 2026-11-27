@@ -180,8 +180,30 @@ const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
       const xs = Array.from({ length: 200 }, (_, i) => lo + (hi - lo) * i / 199); s += `<path d="${path(xs.map(x => [F.X(x), F.Y(normPdf(x, obs.diff, t.se))]))}" fill="none" stroke="${COL.ink}" stroke-width="2.4"/>`;
       s += `<text x="${F.m.l + 8}" y="${F.m.t + 14}" font-size="12.5"><tspan fill="${AC[a]}" font-weight="700">■ bootstrap</tspan>   <tspan font-weight="700">— normal with Welch SE</tspan></text>`; $("#clt").innerHTML = s; }); }
 
-  /* ================= 07 conclusion ================= */
-  function fillEnd() { const sh = Math.log(boot.obs.buy) / Math.log(boot.obs.rev); $("#c1").textContent = `p ≤ ${pf(Math.max(tests[0].pb, tests[1].pb))}`;
-    $("#c2").textContent = boot.a === MEN ? (Math.abs(sh - 1) < .05 ? "≈100%" : fmt(100 * sh, 0) + "%") : $("#c2").textContent; $("#c3").textContent = fmt(A[MEN].basket / A[CTRL].basket) + "×"; $("#c4").textContent = "> 0.999"; }
+  /* ================= tables from the Python results (reproducible numbers) ================= */
+  function fillEnd() {}
+  { const GL = { "Men's only": "Past men's only", "Women's only": "Past women's only", "Both": "Bought both" };
+    $("#subTab").innerHTML = `<tr><th>Group</th><th>Email</th><th>Diff ($)</th><th>Bonf. p</th></tr>` + R.subgroup_welch.map(r => `<tr><td>${GL[r.group]}</td><td>${SHORT[r.arm]}</td><td>${fmt(r.diff)}</td><td><b class="${r.reject_bonf ? "pill-ok" : "pill-no"}">${pf(r.p_bonf)}</b></td></tr>`).join("");
+    const CV = { recency: "Months since last purchase", history: "Past-year spend ($)", newbie: "New customer", mens: "Bought men's before", womens: "Bought women's before" };
+    $("#balTab").innerHTML = `<tr><th>Covariate</th><th>Men's T</th><th>Women's T</th></tr>` + Object.keys(CV).map(k => `<tr><td>${CV[k]}</td><td>${fmt(R.balance_t[k + "|" + MEN])}</td><td>${fmt(R.balance_t[k + "|" + WOM])}</td></tr>`).join("");
+    $("#priorTab").innerHTML = `<p class="small">P(email beats control) under each prior. The conclusion does not depend on the prior.</p><div class="scroll"><table><tr><th>Prior</th><th>Men's &gt; ctrl</th><th>Women's &gt; ctrl</th><th>Men's &gt; women's</th></tr>` +
+      Object.entries(R.prior_sensitivity).map(([k, v]) => `<tr><td>${k}</td><td>${fmt(v[MEN + " > " + CTRL], 4)}</td><td>${fmt(v[WOM + " > " + CTRL], 4)}</td><td>${fmt(v[MEN + " > " + WOM], 4)}</td></tr>`).join("") + `</table></div>`;
+    const w = Object.fromEntries(R.welch.map(x => [x.comparison, x])), bm = R.bootstrap[MEN], bw = R.bootstrap[WOM], pc = R.posterior_comparisons, ci = (o, d = 2) => `${fmt(o.obs, d)} [${fmt(o.lo, d)}, ${fmt(o.hi, d)}]`;
+    const hq = (g, a) => R.heterogeneity.find(o => o.group === g && o.arm === a);
+    const rows = [
+      ["Q1", "Revenue per customer, men's − control", "Welch t + Bonferroni", `+$${fmt(w[MEN + " vs " + CTRL].diff)} · T<sub>W</sub> = ${fmt(w[MEN + " vs " + CTRL].t)}`, `p<sub>adj</sub> = ${pf(w[MEN + " vs " + CTRL].p_bonf)}`, "Yes"],
+      ["Q1", "Revenue per customer, women's − control", "Welch t + Bonferroni", `+$${fmt(w[WOM + " vs " + CTRL].diff)} · T<sub>W</sub> = ${fmt(w[WOM + " vs " + CTRL].t)}`, `p<sub>adj</sub> = ${pf(w[WOM + " vs " + CTRL].p_bonf)}`, "Yes"],
+      ["Q1", "Revenue per customer, men's − women's", "Welch t + Bonferroni", `+$${fmt(w[MEN + " vs " + WOM].diff)}`, `p<sub>adj</sub> = ${pf(w[MEN + " vs " + WOM].p_bonf)}`, "No: inconclusive"],
+      ["Q1", "Conversion, men's vs women's", "Beta–Binomial", `+${fmt(100 * pc[MEN + " > " + WOM].diff_mean)} pp`, `P = ${fmt(pc[MEN + " > " + WOM].prob, 4)}`, "Yes"],
+      ["Q2", "Revenue ratio, men's / control", "Bootstrap (B = 10,000)", ci(bm.revenue_ratio), "95% percentile CI", "—"],
+      ["Q2", "Buyer ratio, men's / control", "Bootstrap", ci(bm.buyer_ratio), "95% percentile CI", "Yes"],
+      ["Q2", "Basket ratio, men's / control", "Bootstrap", ci(bm.basket_ratio), "95% CI includes 1", "No basket effect"],
+      ["Q2", "Share of men's log-lift from buyers", "Bootstrap", ci({ obs: 100 * bm.buyer_share.obs, lo: 100 * bm.buyer_share.lo, hi: 100 * bm.buyer_share.hi }, 0) + "%", "95% percentile CI", "≈ all of it"],
+      ["Q2", "Share of women's log-lift from buyers", "Bootstrap", ci({ obs: 100 * bw.buyer_share.obs, lo: 100 * bw.buyer_share.lo, hi: 100 * bw.buyer_share.hi }, 0) + "%", "95% percentile CI", "Mostly"],
+      ["Q3", "Women's email, past men's-only buyers", "Beta–Binomial", `${fmt(100 * hq("Men's only", WOM).lift_mean)} pp`, `P(lift > 0) = ${fmt(hq("Men's only", WOM).prob_pos, 2)}`, "No clear effect"],
+      ["Q3", "Men's email, past women's-only buyers", "Beta–Binomial", `+${fmt(100 * hq("Women's only", MEN).lift_mean)} pp`, `P(lift > 0) > 0.999`, "Yes"],
+    ];
+    $("#resTab").innerHTML = `<tr><th>Q</th><th>Quantity</th><th>Method</th><th>Estimate</th><th>Uncertainty</th><th>Clear effect?</th></tr>` + rows.map(r => `<tr><td><b>${r[0]}</b></td><td style="text-align:left;white-space:normal">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td><b class="${/^No/.test(r[5]) ? "pill-no" : "pill-ok"}">${r[5]}</b></td></tr>`).join("");
+  }
   runBoot(false);
 })();
